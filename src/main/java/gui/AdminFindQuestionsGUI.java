@@ -20,14 +20,14 @@ import java.util.*;
 import javax.swing.table.DefaultTableModel;
 
 
-public class FindQuestionsGUI extends JFrame {
+public class AdminFindQuestionsGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 
-	private final JLabel jLabelEventDate = new JLabel( ResourceBundle.getBundle("Etiquetas").getString("EventDate"));
+	private final JLabel jLabelEventDate = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("EventDate"));
 	private final JLabel jLabelQueries = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("Queries")); 
-	private final JLabel jLabelEvents = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("Events")); 
+	private final JLabel jLabelEvents = new JLabel( ResourceBundle.getBundle("Etiquetas").getString("Events")); 
 
-	private JButton jButtonClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
+	private JButton jButtonClose = new JButton( ResourceBundle.getBundle("Etiquetas").getString("Close"));
 
 	// Code for JCalendar
 	private JCalendar jCalendar1 = new JCalendar();
@@ -46,11 +46,9 @@ public class FindQuestionsGUI extends JFrame {
 	private DefaultTableModel tableModelQueries;
 	private DefaultTableModel tableModelFee;
 	
+	private JLabel lblmarked;
+	private JFrame thisframe=this;
 	
-	
-
-	
-	private Registered user;
 	
 	private String[] columnNamesEvents = new String[] {
 			ResourceBundle.getBundle("Etiquetas").getString("EventN"), 
@@ -59,20 +57,18 @@ public class FindQuestionsGUI extends JFrame {
 	};
 	private String[] columnNamesQueries = new String[] {
 			ResourceBundle.getBundle("Etiquetas").getString("Query"),
-			ResourceBundle.getBundle("Etiquetas").getString("MinBet")
 
 	};
-	private final JButton btnApostatu = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Bet"));
+	private final JButton btnApostatu = new JButton(ResourceBundle.getBundle("Etiquetas").getString("CreateFee")); //$NON-NLS-1$ //$NON-NLS-2$
 	
 	private String[] columnNamesFee = new String[] {
 			ResourceBundle.getBundle("Etiquetas").getString("Forecast"), 
-			ResourceBundle.getBundle("Etiquetas").getString("Value")
+			ResourceBundle.getBundle("Etiquetas").getString("Value"),
 
 	};
 
-	public FindQuestionsGUI(User user)
+	public AdminFindQuestionsGUI()
 	{
-		this.user = (Registered) user;
 		try
 		{
 			jbInit();
@@ -89,7 +85,7 @@ public class FindQuestionsGUI extends JFrame {
 
 		this.getContentPane().setLayout(null);
 		this.setSize(new Dimension(700, 500));
-		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("QueryQueries"));
+		this.setTitle( ResourceBundle.getBundle("Etiquetas").getString("QueryQueries"));
 
 		jLabelEventDate.setBounds(new Rectangle(40, 15, 140, 25));
 		jLabelQueries.setBounds(138, 248, 406, 14);
@@ -175,7 +171,7 @@ public class FindQuestionsGUI extends JFrame {
 						for (domain.Event ev:events){
 							Vector<Object> row = new Vector<Object>();
 
-							System.out.println(ResourceBundle.getBundle("Etiquetas").getString("Events")+ " "+ev);
+							System.out.println("Events "+ev);
 
 							row.add(ev.getEventNumber());
 							row.add(ev.getDescription());
@@ -207,26 +203,24 @@ public class FindQuestionsGUI extends JFrame {
 				Vector<Question> queries=ev.getQuestions();
 
 				tableModelQueries.setDataVector(null, columnNamesQueries);
-				tableModelQueries.setColumnCount(3);
+				tableModelQueries.setColumnCount(2);
 				
 				if (queries.isEmpty())
-					jLabelQueries.setText(ResourceBundle.getBundle("Etiquetas").getString("NoQueries")+": "+ev.getDescription());
+					jLabelQueries.setText( ResourceBundle.getBundle("Etiquetas").getString("NoQueries")+": "+ev.getDescription());
 				else 
-					jLabelQueries.setText(ResourceBundle.getBundle("Etiquetas").getString("SelectedEvent")+" "+ev.getDescription());
+					jLabelQueries.setText( ResourceBundle.getBundle("Etiquetas").getString("SelectedEvent")+" "+ev.getDescription());
 
 				for (domain.Question q:queries){
 					Vector<Object> row = new Vector<Object>();
 
 					row.add(q.getQuestion());
-					row.add(q.getBetMinimum());
 					row.add(q);
 					tableModelQueries.addRow(row);	
 				}
 				try {
 
-				tableQueries.getColumnModel().getColumn(0).setPreferredWidth(150);
-				tableQueries.getColumnModel().getColumn(1).setPreferredWidth(93);
-				tableQueries.getColumnModel().removeColumn(tableQueries.getColumnModel().getColumn(2));
+				tableQueries.getColumnModel().getColumn(0).setPreferredWidth(268);
+				tableQueries.getColumnModel().removeColumn(tableQueries.getColumnModel().getColumn(1));
 				
 				tableFee.getColumnModel().getColumn(0).setPreferredWidth(150);
 				tableFee.getColumnModel().getColumn(1).setPreferredWidth(93);
@@ -250,30 +244,13 @@ public class FindQuestionsGUI extends JFrame {
 		tableModelQueries = new DefaultTableModel(null, columnNamesQueries);
 
 		tableQueries.setModel(tableModelQueries);
-		tableQueries.getColumnModel().getColumn(0).setPreferredWidth(150);
-		tableQueries.getColumnModel().getColumn(1).setPreferredWidth(93);
+		tableQueries.getColumnModel().getColumn(0).setPreferredWidth(268);
 		
 
 
 		this.getContentPane().add(scrollPaneEvents, null);
 		this.getContentPane().add(scrollPaneQueries, null);
-		btnApostatu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(tableFee.getSelectedRow()==-1) {
-					jLabelQueries.setText(ResourceBundle.getBundle("Etiquetas").getString("SelectFee"));
-				}else {
-				int i=tableFee.getSelectedRow();
-				domain.Kuotak k=(domain.Kuotak)tableModelFee.getValueAt(i,2);
-				BetGUI a = new BetGUI(user, k);
-				a.setVisible(true);
-				}
-				
-			}
-		});
-		btnApostatu.setBounds(new Rectangle(98, 420, 130, 30));
-		btnApostatu.setBounds(475, 424, 130, 30);
 		
-		getContentPane().add(btnApostatu);
 		
 		tableModelFee = new DefaultTableModel(null, columnNamesFee);
 		
@@ -288,7 +265,7 @@ public class FindQuestionsGUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int i=tableQueries.getSelectedRow();
-				domain.Question q=(domain.Question)tableModelQueries.getValueAt(i,2); // obtain q object
+				domain.Question q=(domain.Question)tableModelQueries.getValueAt(i,1); // obtain q object
 				Vector<Kuotak> kuo=q.getFees();
 
 				tableModelFee.setDataVector(null, columnNamesFee);
@@ -327,12 +304,55 @@ public class FindQuestionsGUI extends JFrame {
 		tableFee.getColumnModel().getColumn(1).setPreferredWidth(93);
 
 		
+		btnApostatu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tableQueries.getSelectedRow()==-1) {
+					lblmarked.setText("Select a question");
+				}else {
+					int i=tableQueries.getSelectedRow();
+					domain.Question q=(domain.Question)tableModelQueries.getValueAt(i,1); // obtain q object
+					CreateFeeGUI frame = new CreateFeeGUI(q);
+					//				thisframe.setVisible(false);
+					frame.setVisible(true);
+				}
+			}
+		});
+		btnApostatu.setBounds(new Rectangle(98, 420, 130, 30));
+		btnApostatu.setBounds(476, 420, 130, 30);
+		
+		getContentPane().add(btnApostatu);
+		
+		JButton btnEmaitza = new JButton(ResourceBundle.getBundle("Etiquetas").getString("MarkAsResult"));
+		btnEmaitza.addActionListener(new ActionListener() {
+						
+			public void actionPerformed(ActionEvent e) {
+				if(tableFee.getSelectedRow()==-1) {
+					lblmarked.setText(ResourceBundle.getBundle("Etiquetas").getString("SelectFee"));
+				}else {
+					int i=tableFee.getSelectedRow();
+					domain.Kuotak k=(domain.Kuotak)tableModelFee.getValueAt(i,2);
+					if(!k.getQuestion().hasSolution()) {
+
+						facade.markResult(k);
+						lblmarked.setText(ResourceBundle.getBundle("Etiquetas").getString("NoSolution"));
+					}else {
+						lblmarked.setText(ResourceBundle.getBundle("Etiquetas").getString("HasSolution"));				
+					}
+				}
+			}
+		});
+		btnEmaitza.setBounds(271, 420, 173, 30);
+		getContentPane().add(btnEmaitza);
+		
+		lblmarked = new JLabel(""); //$NON-NLS-1$ //$NON-NLS-2$
+		lblmarked.setBounds(292, 395, 165, 14);
+		getContentPane().add(lblmarked);
+		
+
+		
 	}
 
 	private void jButton2_actionPerformed(ActionEvent e) {
-		this.setVisible(false);
-		RegisteredUserGUI a = new RegisteredUserGUI(user);
-		a.setVisible(true);
+		thisframe.setVisible(false);
 	}
-
 }

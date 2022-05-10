@@ -34,15 +34,17 @@ public class CreateQuestionGUI extends JFrame {
 	private JCalendar jCalendar = new JCalendar();
 	private Calendar calendarAct = null;
 	private Calendar calendarAnt = null;
+	private JLabel jLabelError = new JLabel();
 
 	private JScrollPane scrollPaneEvents = new JScrollPane();
 
 	private JButton jButtonCreate = new JButton(ResourceBundle.getBundle("Etiquetas").getString("CreateQuery"));
 	private JButton jButtonClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
 	private JLabel jLabelMsg = new JLabel();
-	private JLabel jLabelError = new JLabel();
 	
 	private Vector<Date> datesWithEventsCurrentMonth = new Vector<Date>();
+	private JComboBox<String> comboBox = null;
+	private DefaultComboBoxModel<String> pronostikoIzenak = new DefaultComboBoxModel<String>();
 
 	public CreateQuestionGUI(Vector<domain.Event> v) {
 		try {
@@ -86,13 +88,8 @@ public class CreateQuestionGUI extends JFrame {
 
 		jLabelMsg.setBounds(new Rectangle(275, 182, 305, 20));
 		jLabelMsg.setForeground(Color.red);
-		// jLabelMsg.setSize(new Dimension(305, 20));
-
-		jLabelError.setBounds(new Rectangle(175, 240, 305, 20));
-		jLabelError.setForeground(Color.red);
 
 		this.getContentPane().add(jLabelMsg, null);
-		this.getContentPane().add(jLabelError, null);
 
 		this.getContentPane().add(jButtonClose, null);
 		this.getContentPane().add(jButtonCreate, null);
@@ -107,7 +104,7 @@ public class CreateQuestionGUI extends JFrame {
 		this.getContentPane().add(jCalendar, null);
 		
 		
-		BLFacade facade = MainGUI.getBusinessLogic();
+		BLFacade facade = AdminGUI.getBusinessLogic();
 		datesWithEventsCurrentMonth=facade.getEventsMonth(jCalendar.getDate());
 		paintDaysWithEvents(jCalendar,datesWithEventsCurrentMonth);
 		
@@ -116,6 +113,9 @@ public class CreateQuestionGUI extends JFrame {
 		jLabelEventDate.setBounds(new Rectangle(40, 15, 140, 25));
 		jLabelEventDate.setBounds(40, 16, 140, 25);
 		getContentPane().add(jLabelEventDate);
+
+		pronostikoIzenak.addElement("Golak");
+		pronostikoIzenak.addElement("Partidak");
 
 		
 		// Code for JCalendar
@@ -136,15 +136,15 @@ public class CreateQuestionGUI extends JFrame {
 					int monthAct = calendarAct.get(Calendar.MONTH);
 					if (monthAct!=monthAnt) {
 						if (monthAct==monthAnt+2) { 
-							// Si en JCalendar estÃ¡ 30 de enero y se avanza al mes siguiente, devolverÃ­a 2 de marzo (se toma como equivalente a 30 de febrero)
-							// Con este cÃ³digo se dejarÃ¡ como 1 de febrero en el JCalendar
+							// Si en JCalendar está 30 de enero y se avanza al mes siguiente, devolvería 2 de marzo (se toma como equivalente a 30 de febrero)
+							// Con este código se dejará como 1 de febrero en el JCalendar
 							calendarAct.set(Calendar.MONTH, monthAnt+1);
 							calendarAct.set(Calendar.DAY_OF_MONTH, 1);
 						}
 						
 						jCalendar.setCalendar(calendarAct);
 						
-						BLFacade facade = MainGUI.getBusinessLogic();
+						BLFacade facade = AdminGUI.getBusinessLogic();
 
 						datesWithEventsCurrentMonth=facade.getEventsMonth(jCalendar.getDate());
 					}
@@ -157,7 +157,7 @@ public class CreateQuestionGUI extends JFrame {
 					Date firstDay = UtilDate.trim(calendarAct.getTime());
 
 					try {
-						BLFacade facade = MainGUI.getBusinessLogic();
+						BLFacade facade = AdminGUI.getBusinessLogic();
 
 						Vector<domain.Event> events = facade.getEvents(firstDay);
 
@@ -251,13 +251,14 @@ public static void paintDaysWithEvents(JCalendar jCalendar,Vector<Date> datesWit
 
 				// It could be to trigger an exception if the introduced string is not a number
 				float inputPrice = Float.parseFloat(jTextFieldPrice.getText());
+				
 
 				if (inputPrice <= 0)
 					jLabelError.setText(ResourceBundle.getBundle("Etiquetas").getString("ErrorNumber"));
 				else {
 
 					// Obtain the business logic from a StartWindow class (local or remote)
-					BLFacade facade = MainGUI.getBusinessLogic();
+					BLFacade facade = AdminGUI.getBusinessLogic();
 
 					facade.createQuestion(event, inputQuery, inputPrice);
 
