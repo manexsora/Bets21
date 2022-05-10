@@ -1,6 +1,8 @@
 package domain;
 
 import java.io.*;
+import java.util.List;
+import java.util.Vector;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -20,7 +22,12 @@ public class Question implements Serializable {
 	private Integer questionNumber;
 	private String question; 
 	private float betMinimum;
-	private String result;  
+	
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
+	private Vector<Kuotak> fees = new Vector<Kuotak>();
+	
+	@XmlIDREF
+	private Kuotak result;
 	@XmlIDREF
 	private Event event;
 
@@ -28,21 +35,31 @@ public class Question implements Serializable {
 		super();
 	}
 	
-	public Question(Integer queryNumber, String query, float betMinimum, Event event) {
+	
+	public Question(String query, float betMinimum, Event event) {
 		super();
-		this.questionNumber = queryNumber;
 		this.question = query;
 		this.betMinimum=betMinimum;
 		this.event = event;
 	}
-	
-	public Question(String query, float betMinimum,  Event event) {
-		super();
-		this.question = query;
-		this.betMinimum=betMinimum;
 
-		//this.event = event;
+	
+	public Kuotak addFee(String ema, float kop) {
+		Kuotak k = new Kuotak(ema, kop, this);
+		this.fees.add(k);
+		return k;
 	}
+	public boolean DoesThisFeeExist(String pron) {
+		for(Kuotak a:this.fees) {
+			if(a.getPronostico().equals(pron)) return true;
+		}
+		return false;
+	}
+
+	public boolean hasSolution() {
+		return(result!=null);
+	}
+
 
 	/**
 	 * Get the  number of the question
@@ -113,7 +130,7 @@ public class Question implements Serializable {
 	 * 
 	 * @return the the query result
 	 */
-	public String getResult() {
+	public Kuotak getResult() {
 		return result;
 	}
 
@@ -125,7 +142,7 @@ public class Question implements Serializable {
 	 * @param result of the query to be setted
 	 */
 	
-	public void setResult(String result) {
+	public void setResult(Kuotak result) {
 		this.result = result;
 	}
 
@@ -157,6 +174,16 @@ public class Question implements Serializable {
 	public String toString(){
 		return questionNumber+";"+question+";"+Float.toString(betMinimum);
 	}
+
+
+	public Vector<Kuotak> getFees() {
+		return fees;
+	}
+
+
+
+	
+
 
 
 

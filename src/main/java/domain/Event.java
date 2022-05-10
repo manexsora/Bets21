@@ -14,14 +14,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @Entity
 public class Event implements Serializable {
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	@XmlID
 	@XmlJavaTypeAdapter(IntegerAdapter.class)
-	@Id @GeneratedValue
-	private Integer eventNumber;
+	@Id @GeneratedValue(strategy=GenerationType.AUTO) Integer eventNumber;
 	private String description; 
 	private Date eventDate;
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
@@ -45,7 +42,7 @@ public class Event implements Serializable {
 		this.eventDate=eventDate;
 	}
 	
-	public Event( String description,Date eventDate) {
+	public Event(String description,Date eventDate) {
 		this.description = description;
 		this.eventDate=eventDate;
 	}
@@ -84,6 +81,7 @@ public class Event implements Serializable {
 	 * 
 	 * @param question to be added to the event
 	 * @param betMinimum of that question
+	 * @param fee 
 	 * @return Bet
 	 */
 	public Question addQuestion(String question, float betMinimum)  {
