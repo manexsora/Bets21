@@ -21,7 +21,10 @@ public class Registered extends User{
 	private Vector<Bet> apostuak = new Vector<Bet>();
 	
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
-	private Vector<Mezua> mezuak = new Vector<Mezua>();
+	private Vector<Mezua> bidaliak = new Vector<Mezua>();
+	
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
+	private Vector<Mezua> jasoak = new Vector<Mezua>();
 	
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private Vector<Jarraitu> jarraitzaileak = new Vector<Jarraitu>();
@@ -84,4 +87,18 @@ public class Registered extends User{
 		apostuak.remove(b);
 		
 	}
+	public Mezua mezuaIdatzi(Registered nori, String asun, String ed) {
+		Mezua mz = new Mezua(nori,this,asun,ed);
+		this.addBidalia(mz);
+		nori.addJasoa(mz);
+		return mz;
+		
+	}
+	public void addBidalia(Mezua mz) {
+		this.bidaliak.add(mz);
+	}
+	public void addJasoa(Mezua mz) {
+		this.jasoak.add(mz);
+	}
+	
 }

@@ -230,5 +230,14 @@ public class BLFacadeImplementation  implements BLFacade {
 		dbManager.deleteEvent(ev);
 		dbManager.close();
 	}
-
+	
+	@WebMethod
+	public boolean mezuaBidali(String noriIz, String norkIz, String asun, String ed) {
+		boolean a = dbManager.isRegister(noriIz);
+		if(a == false) return false;
+		a = dbManager.mezuaBidali(noriIz,norkIz,asun,ed);
+		return a;
+	}
 }
+	
+

@@ -501,6 +501,16 @@ public class DataAccess  {
 	db.getTransaction().commit();
 }
 
+	public boolean mezuaBidali(String noriIz, String norkIz, String asun, String ed) {
+		Registered nork = db.find(Registered.class, norkIz);
+		Registered nori = db.find(Registered.class, noriIz);
+		nork.mezuaIdatzi(nori,asun,ed);
+		db.getTransaction().begin();
+		db.persist(nork);
+		db.getTransaction().commit();
+		return true;
+	}
+
 
 
 

@@ -12,11 +12,14 @@ public class Mezua {
 	private Registered nork;
 	@XmlIDREF
 	private Registered nori;
+	private String asuntua;
 	
-	public Mezua(String ed, Registered nork, Registered nori) {
-		this.edukia=ed;
-		this.nork=nork;
-		this.nori=nori;
+
+	public Mezua(Registered noriK, Registered norkK, String asun, String ed) {
+		this.nori = noriK;
+		this.nork = norkK;
+		this.asuntua = asun;
+		this.edukia = ed;
 	}
 	public String getEdukia() {
 		return edukia;
@@ -35,6 +38,12 @@ public class Mezua {
 	}
 	public void setNori(Registered nori) {
 		this.nori = nori;
+	}
+	public String getAsuntua() {
+		return asuntua;
+	}
+	public void setAsuntua(String asuntua) {
+		this.asuntua = asuntua;
 	}
 
 	

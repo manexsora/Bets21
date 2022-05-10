@@ -89,6 +89,8 @@ public interface BLFacade  {
 	@WebMethod void markResult(Kuotak k);
 	
 	@WebMethod void deleteEvent(Event Event);
+	
+	@WebMethod boolean mezuaBidali(String noriIz, String norkIz, String asun, String ed);
 
 	
 }
