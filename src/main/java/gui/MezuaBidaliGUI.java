@@ -6,11 +6,16 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import businessLogic.BLFacade;
+import domain.Registered;
+
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 import java.awt.event.ActionEvent;
 
 public class MezuaBidaliGUI extends JFrame {
@@ -20,6 +25,13 @@ public class MezuaBidaliGUI extends JFrame {
 	private JTextField asuntoBox;
 	private JTextField EdukiaBox;
 
+	private static Registered user;
+	private BLFacade fatxada;
+	MezuaBidaliGUI thisframe;
+	public static Registered getUser() {
+		return user;
+	}
+
 	/**
 	 * Launch the application.
 	 */
@@ -27,7 +39,7 @@ public class MezuaBidaliGUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MezuaBidaliGUI frame = new MezuaBidaliGUI();
+					MezuaBidaliGUI frame = new MezuaBidaliGUI(getUser());
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -39,7 +51,9 @@ public class MezuaBidaliGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public MezuaBidaliGUI() {
+	public MezuaBidaliGUI(Registered us) {
+		MezuaBidaliGUI.user=us;
+		fatxada = AdminGUI.getBusinessLogic();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 506, 374);
 		contentPane = new JPanel();
@@ -52,19 +66,19 @@ public class MezuaBidaliGUI extends JFrame {
 		contentPane.add(NoriTxtBox);
 		NoriTxtBox.setColumns(10);
 		
-		JLabel NoriLabel = new JLabel("Nori");
+		JLabel NoriLabel = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("Nori"));
 		NoriLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		NoriLabel.setBounds(49, 49, 49, 14);
+		NoriLabel.setBounds(49, 49, 93, 14);
 		contentPane.add(NoriLabel);
 		
-		JLabel MezuaBitaliTitle = new JLabel("Mezu bat bidali");
+		JLabel MezuaBitaliTitle = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("SendAMessage"));
 		MezuaBitaliTitle.setFont(new Font("Tahoma", Font.BOLD, 16));
-		MezuaBitaliTitle.setBounds(179, 11, 141, 14);
+		MezuaBitaliTitle.setBounds(174, 11, 187, 35);
 		contentPane.add(MezuaBitaliTitle);
 		
-		JLabel AsuntoLbl = new JLabel("Asuntua");
+		JLabel AsuntoLbl = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("Asunto"));
 		AsuntoLbl.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		AsuntoLbl.setBounds(49, 100, 49, 14);
+		AsuntoLbl.setBounds(49, 100, 93, 14);
 		contentPane.add(AsuntoLbl);
 		
 		asuntoBox = new JTextField();
@@ -72,9 +86,9 @@ public class MezuaBidaliGUI extends JFrame {
 		asuntoBox.setBounds(46, 119, 118, 20);
 		contentPane.add(asuntoBox);
 		
-		JLabel lblEdukia = new JLabel("Edukia");
+		JLabel lblEdukia = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("Contenido"));
 		lblEdukia.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblEdukia.setBounds(49, 160, 49, 14);
+		lblEdukia.setBounds(49, 160, 93, 14);
 		contentPane.add(lblEdukia);
 		
 		EdukiaBox = new JTextField();
@@ -82,13 +96,24 @@ public class MezuaBidaliGUI extends JFrame {
 		EdukiaBox.setBounds(46, 179, 360, 95);
 		contentPane.add(EdukiaBox);
 		
-		JLabel EmaitzaLabel = new JLabel("New label");
+		JLabel EmaitzaLabel = new JLabel("");
 		EmaitzaLabel.setBounds(46, 286, 214, 50);
 		contentPane.add(EmaitzaLabel);
 		
-		JButton bidaliBtn = new JButton("New button");
+		JButton bidaliBtn = new JButton(ResourceBundle.getBundle("Etiquetas").getString("SendMessage"));
 		bidaliBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String nori= NoriTxtBox.getText();
+				String nork = user.getUsername();
+				String asun = asuntoBox.getText();
+				String eduk = EdukiaBox.getText();
+				Boolean a =fatxada.mezuaBidali(nori, nork, asun, eduk);
+				if(a == false) {
+					EmaitzaLabel.setText(ResourceBundle.getBundle("Etiquetas").getString("MsjError"));
+				}
+				else {
+					EmaitzaLabel.setText(ResourceBundle.getBundle("Etiquetas").getString("MsjEnviado"));
+				}
 			}
 		});
 		bidaliBtn.setBounds(338, 300, 89, 23);
