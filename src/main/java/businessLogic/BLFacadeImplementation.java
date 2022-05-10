@@ -10,8 +10,13 @@ import javax.jws.WebService;
 import configuration.ConfigXML;
 import dataAccess.DataAccess;
 import domain.Question;
+import domain.Registered;
+import domain.User;
+import domain.Bet;
 import domain.Event;
+import domain.Kuotak;
 import exceptions.EventFinished;
+import exceptions.FeeAlreadyExist;
 import exceptions.QuestionAlreadyExist;
 
 /**
@@ -94,6 +99,7 @@ public class BLFacadeImplementation  implements BLFacade {
 	}
 
     
+    
 	/**
 	 * This method invokes the data access to retrieve the dates a month for which there are events
 	 * 
@@ -125,6 +131,104 @@ public class BLFacadeImplementation  implements BLFacade {
 		dbManager.initializeDB();
 		dbManager.close();
 	}
+    
+    /**
+     * 
+     */
+    @WebMethod public User isLogin(String user, String password) {
+    	dbManager.open(false);
+    	User a = dbManager.isLogin(user, password);
+    	dbManager.close();
+    	return a;
+    }
+    
+    /**
+     * 
+     * @param user
+     * @return true if the username is already registered.
+     */
+    @WebMethod public boolean isRegister(String user) {
+    	dbManager.open(false);
+    	boolean a = dbManager.isRegister(user);
+    	dbManager.close();
+    	return a;
+
+    }
+    
+    @WebMethod public void register(Registered user) {
+    	dbManager.open(false);
+    	dbManager.register(user);
+    	dbManager.close();
+
+    }
+
+	@WebMethod
+	public void createEvent(String eventName, Date data) {
+	 
+		dbManager.open(false);
+		dbManager.createEvent(eventName, data);
+		
+	    
+//		if(new Date().compareTo(event.getEventDate())>0)
+//			throw new EventFinished(ResourceBundle.getBundle("Etiquetas").getString("ErrorEventHasFinished"));
+					
+
+		dbManager.close();
+		
+		
+	}
+	
+	@WebMethod
+	public void depositMoney(Registered user, Float amount) {
+		dbManager.open(false);
+    	dbManager.depositMoney(user, amount);
+    	dbManager.close();
+	}
+
+	@WebMethod
+	public void makeBet(Registered User, float betValue, Kuotak kuota) {
+		dbManager.open(false);
+    	dbManager.makeBet(User,betValue,kuota);
+    	dbManager.close();
+	}
+	
+	  @WebMethod
+	   public Kuotak createFee(Question q, String ema, float fee) throws EventFinished, FeeAlreadyExist{
+			dbManager.open(false);
+			Kuotak qry=null;
+			
+		    
+			if(new Date().compareTo(q.getEvent().getEventDate())>0)
+				throw new EventFinished(ResourceBundle.getBundle("Etiquetas").getString("ErrorEventHasFinished"));
+					
+			
+			qry=dbManager.createFee(q,ema,fee);		
+
+			dbManager.close();
+			
+			return qry;
+	  }
+
+	@WebMethod
+	public void deleteBet(Registered User, Bet b) {
+		dbManager.open(false);
+    	dbManager.deleteBet(User,b);
+    	dbManager.close();
+	}
+
+	@Override
+	public void markResult(Kuotak k) {
+		dbManager.open(false);
+    	dbManager.markResult(k);
+    	dbManager.close();
+		
+	};
+	
+	@WebMethod
+	public void deleteEvent(Event ev) {
+		dbManager.open(false);
+		dbManager.deleteEvent(ev);
+		dbManager.close();
+	}
 
 }
-

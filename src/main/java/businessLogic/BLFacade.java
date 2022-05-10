@@ -9,8 +9,13 @@ import java.util.Date;
 
 //import domain.Booking;
 import domain.Question;
+import domain.Registered;
+import domain.User;
+import domain.Bet;
 import domain.Event;
+import domain.Kuotak;
 import exceptions.EventFinished;
+import exceptions.FeeAlreadyExist;
 import exceptions.QuestionAlreadyExist;
 
 import javax.jws.WebMethod;
@@ -35,6 +40,14 @@ public interface BLFacade  {
 	 */
 	@WebMethod Question createQuestion(Event event, String question, float betMinimum) throws EventFinished, QuestionAlreadyExist;
 	
+	/**
+	 * This method creates an event
+	 * 
+	 * @param eventname for the new event
+	 * @param data for the new event
+	 */
+	@WebMethod public void createEvent(String eventName, Date data);
+	
 	
 	/**
 	 * This method retrieves the events of a given date 
@@ -57,6 +70,25 @@ public interface BLFacade  {
 	 * It is invoked only when the option "initialize" is declared in the tag dataBaseOpenMode of resources/config.xml file
 	 */	
 	@WebMethod public void initializeBD();
+
+
+	@WebMethod public User isLogin(String text, String string);
+	
+	@WebMethod public boolean isRegister(String user);
+	
+	@WebMethod public void register(Registered user);
+	
+	@WebMethod public void depositMoney(Registered user, Float amount);
+
+	@WebMethod void makeBet(Registered User, float betValue, Kuotak kuota);
+	
+	@WebMethod Kuotak createFee(Question q, String ema, float fee) throws EventFinished, FeeAlreadyExist;
+	
+	@WebMethod void deleteBet(Registered User, Bet b);
+	
+	@WebMethod void markResult(Kuotak k);
+	
+	@WebMethod void deleteEvent(Event Event);
 
 	
 }
