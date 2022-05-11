@@ -92,5 +92,6 @@ public interface BLFacade  {
 	
 	@WebMethod boolean mezuaBidali(String noriIz, String norkIz, String asun, String ed);
 
+	@WebMethod boolean duplicate(Event ev, Date d);
 	
 }

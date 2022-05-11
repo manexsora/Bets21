@@ -89,6 +89,11 @@ public class Event implements Serializable {
         questions.add(q);
         return q;
 	}
+	
+	public Question addQuestion(Question q)  {
+        questions.add(q);
+        return q;
+	}
 
 	
 	/**

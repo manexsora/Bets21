@@ -49,6 +49,12 @@ public class Question implements Serializable {
 		this.fees.add(k);
 		return k;
 	}
+	
+	public Kuotak addFee(Kuotak ku) {
+		this.fees.add(ku);
+		return ku;
+	}
+	
 	public boolean DoesThisFeeExist(String pron) {
 		for(Kuotak a:this.fees) {
 			if(a.getPronostico().equals(pron)) return true;

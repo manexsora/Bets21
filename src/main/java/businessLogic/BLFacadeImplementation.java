@@ -240,6 +240,15 @@ public class BLFacadeImplementation  implements BLFacade {
 		dbManager.close();
 		return a;
 	}
+
+	@Override
+	public boolean duplicate(Event ev, Date d) {
+		boolean a;
+		dbManager.open(false);
+		a = dbManager.duplicate(ev, d);
+		dbManager.close();
+		return a;
+	}
 }
 	
 

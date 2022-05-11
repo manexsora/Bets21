@@ -510,6 +510,48 @@ public class DataAccess  {
 		db.getTransaction().commit();
 		return true;
 	}
+	
+	public boolean duplicate(Event evi, Date d) {
+		if(alreadyExistsEvent(evi,d)) {
+			return true;
+		}
+		Event event = db.find(Event.class, evi);
+		String des = event.getDescription();
+		Vector<Question> questions = event.getQuestions();
+		Event nEvent = new Event(des, d);
+		for(Question q: questions) {
+			float minB = q.getBetMinimum();
+			String quer = q.getQuestion();
+			Question qu= new Question(quer, minB, nEvent);
+			nEvent.addQuestion(q);
+			Vector<Kuotak> fees = q.getFees();
+			Vector<Kuotak> UnekoFee = q.getFees();
+			for(Kuotak f: fees) {
+				String pron = f.getPronostico();
+				double val = f.getValue();
+				Kuotak ku = new Kuotak(pron, val, q);
+				qu.addFee(ku);
+			}
+		}
+		db.getTransaction().begin();
+		db.persist(event);
+		db.persist(nEvent);
+		db.getTransaction().commit();
+		return false;
+		
+		
+	}
+	
+	public boolean alreadyExistsEvent(Event evi,Date d) {
+		TypedQuery<Event> query = db.createQuery("SELECT ev FROM Event ev WHERE ev.eventDate=?1 and ev.description=?2",Event.class);   
+		query.setParameter(1, d);
+		query.setParameter(2, evi.getDescription());
+		List<Event> events = query.getResultList();
+		if(!events.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
 
 
 
