@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlIDREF;
 
@@ -18,7 +19,7 @@ public class Bet {
 
 	private float apostatutakoDiruKop;
 	
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
+	@ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private Vector<Kuotak> kuotaList;
 	
 	private float kuotaTot;
@@ -78,6 +79,15 @@ public class Bet {
 
 	public void setKuotaTot(float kuotaTot) {
 		this.kuotaTot = kuotaTot;
+	}
+	
+	public boolean hasResultList() {
+		for(Kuotak k:this.kuotaList) {
+			if(k.getQuestion().getResult()==null) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 
