@@ -41,12 +41,14 @@ public class FindQuestionsGUI extends JFrame {
 	private JTable tableEvents= new JTable();
 	private JTable tableQueries = new JTable();
 	private JTable tableFee= new JTable();
+	private JTable tableBet = new JTable();
 
 	private DefaultTableModel tableModelEvents;
 	private DefaultTableModel tableModelQueries;
 	private DefaultTableModel tableModelFee;
+	private DefaultTableModel tableModelBet;
 	
-	
+	private JFrame thisFrame;
 	
 
 	
@@ -65,6 +67,12 @@ public class FindQuestionsGUI extends JFrame {
 	private final JButton btnApostatu = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Bet"));
 	
 	private String[] columnNamesFee = new String[] {
+			ResourceBundle.getBundle("Etiquetas").getString("Forecast"), 
+			ResourceBundle.getBundle("Etiquetas").getString("Value")
+
+	};
+	
+	private String[] columnNamesBet = new String[] {
 			ResourceBundle.getBundle("Etiquetas").getString("Forecast"), 
 			ResourceBundle.getBundle("Etiquetas").getString("Value")
 
@@ -88,9 +96,11 @@ public class FindQuestionsGUI extends JFrame {
 	{
 
 		this.getContentPane().setLayout(null);
-		this.setSize(new Dimension(700, 500));
+		this.setSize(new Dimension(1042, 500));
 		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("QueryQueries"));
-
+		
+		Vector<Kuotak> betList = new Vector<Kuotak>();
+		thisFrame=this;
 		jLabelEventDate.setBounds(new Rectangle(40, 15, 140, 25));
 		jLabelQueries.setBounds(138, 248, 406, 14);
 		jLabelEvents.setBounds(295, 19, 259, 16);
@@ -259,19 +269,18 @@ public class FindQuestionsGUI extends JFrame {
 		this.getContentPane().add(scrollPaneQueries, null);
 		btnApostatu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(tableFee.getSelectedRow()==-1) {
-					jLabelQueries.setText(ResourceBundle.getBundle("Etiquetas").getString("SelectFee"));
-				}else {
-				int i=tableFee.getSelectedRow();
-				domain.Kuotak k=(domain.Kuotak)tableModelFee.getValueAt(i,2);
-				BetGUI a = new BetGUI(user, k);
-				a.setVisible(true);
-				}
+					if(betList.size()<1) {	
+						int i=tableFee.getSelectedRow();
+						domain.Kuotak k=(domain.Kuotak)tableModelFee.getValueAt(i,2);
+						betList.add(k);
+					}
+					BetGUI a = new BetGUI(user, betList);
+					a.setVisible(true);
 				
 			}
 		});
 		btnApostatu.setBounds(new Rectangle(98, 420, 130, 30));
-		btnApostatu.setBounds(475, 424, 130, 30);
+		btnApostatu.setBounds(335, 420, 130, 30);
 		
 		getContentPane().add(btnApostatu);
 		
@@ -323,8 +332,81 @@ public class FindQuestionsGUI extends JFrame {
 		tableModelFee = new DefaultTableModel(null, columnNamesFee);
 
 		tableFee.setModel(tableModelFee);
+		
 		tableFee.getColumnModel().getColumn(0).setPreferredWidth(150);
 		tableFee.getColumnModel().getColumn(1).setPreferredWidth(93);
+		
+		
+		JButton btnAddToBet = new JButton(ResourceBundle.getBundle("Etiquetas").getString("FindQuestionsGUI.btnNewButton.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		btnAddToBet.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tableFee.getSelectedRow()!=-1) {
+					int i=tableFee.getSelectedRow();
+					domain.Kuotak k=(domain.Kuotak)tableModelFee.getValueAt(i,2); // obtain q object
+					betList.add(k);
+					
+					
+					tableModelBet.setDataVector(null, columnNamesBet);
+					tableModelBet.setColumnCount(3);
+					
+					if (betList.isEmpty()) {
+						//MEZUA
+					}else { 
+
+					for (domain.Kuotak ku:betList){
+						Vector<Object> row = new Vector<Object>();
+
+						row.add(ku.getPronostico());
+						row.add(ku.getValue());
+						row.add(ku);
+						tableModelBet.addRow(row);	
+					}
+					try {
+
+					tableBet.getColumnModel().getColumn(0).setPreferredWidth(150);
+					tableBet.getColumnModel().getColumn(1).setPreferredWidth(93);
+					tableBet.getColumnModel().removeColumn(tableBet.getColumnModel().getColumn(2));
+					}
+					catch(Exception exx) {
+						
+					}
+				}
+					
+					
+					
+					thisFrame.setVisible(false);
+					thisFrame.setVisible(true);
+					
+				}else {
+					//mezu bat jarri o
+				}
+			}
+		});
+		btnAddToBet.setBounds(553, 420, 130, 30);
+		getContentPane().add(btnAddToBet);
+		
+
+		
+		JLabel lblCurrentBets = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("FindQuestionsGUI.lblNewLabel.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		lblCurrentBets.setBounds(695, 57, 175, 14);
+		getContentPane().add(lblCurrentBets);
+		
+		tableModelBet = new DefaultTableModel(null, columnNamesBet);
+		
+		tableModelBet.setDataVector(null, columnNamesBet);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(705, 85, 287, 288);
+		getContentPane().add(scrollPane);
+		
+
+		scrollPane.setViewportView(tableBet);
+		tableModelBet = new DefaultTableModel(null, columnNamesBet);
+
+		tableBet.setModel(tableModelBet);
+		
+		
+
 
 		
 	}
@@ -334,5 +416,4 @@ public class FindQuestionsGUI extends JFrame {
 		RegisteredUserGUI a = new RegisteredUserGUI(user);
 		a.setVisible(true);
 	}
-
 }
