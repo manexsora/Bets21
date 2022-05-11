@@ -2,10 +2,13 @@ package domain;
 
 import java.util.Vector;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlIDREF;
 
 @Entity
@@ -15,6 +18,7 @@ public class Bet {
 
 	private float apostatutakoDiruKop;
 	
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private Vector<Kuotak> kuotaList;
 	
 	private float kuotaTot;
@@ -50,7 +54,7 @@ public class Bet {
 		apostatutakoDiruKop = diruKop;
 		this.User = user;
 		this.kuotaList=kuota;
-		float a=0;
+		float a=1;
 		for(Kuotak k:kuota) {
 			a*=k.getValue();
 		}
