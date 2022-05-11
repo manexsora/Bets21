@@ -186,9 +186,9 @@ public class BLFacadeImplementation  implements BLFacade {
 	}
 
 	@WebMethod
-	public void makeBet(Registered User, float betValue, Kuotak kuota) {
+	public void makeBet(Registered User, float betValue, Vector<Kuotak> kuotalist) {
 		dbManager.open(false);
-    	dbManager.makeBet(User,betValue,kuota);
+    	dbManager.makeBet(User,betValue,kuotalist);
     	dbManager.close();
 	}
 	
