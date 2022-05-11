@@ -354,22 +354,34 @@ public class DataAccess  {
 
 	}
 
-	public void makeBet(Registered user, float betValue, Kuotak kuota) {
+	public void makeBet(Registered user, float betValue, Vector<Kuotak> kuot) {
 		User bo = db.find(User.class, user.getUsername());
-		Kuotak ku = db.find(Kuotak.class, kuota.getFeeN());
+		Vector<Kuotak> kuotalist = new Vector<Kuotak>(); 
+		for(Kuotak kuo:kuot) {
+			Kuotak ku = db.find(Kuotak.class, kuo.getFeeN());
+			kuotalist.add(ku);
+		}
 		Registered us = (Registered) bo;
 		float a = us.getDirua()-betValue;
 		us.setDirua(a);
 		user.setDirua(a);
 		user.addMovement(betValue, 2);
-		Movement m = us.addMovement(betValue, 2);
-		user.addBets(betValue,kuota);
-		Bet b = us.addBets(betValue, kuota);
-		kuota.addBet(b);
-		ku.addBet(b);
+		us.addMovement(betValue, 2);
+ 
+		user.addBet(betValue,kuot);
+		Bet b = us.addBet(betValue, kuotalist);
+		for(Kuotak kk:kuot) {
+			kk.addBet(b);
+		}
+
+		for(Kuotak kk:kuotalist) {
+			kk.addBet(b);
+		}
+
+
+
 		db.getTransaction().begin();
 		db.persist(us);
-		db.persist(ku);
 		db.getTransaction().commit();
 		user.getBets().get(user.getBets().size()-1).setBetNumber(us.getBets().get(user.getBets().size()-1).getBetNumber());
 	}
