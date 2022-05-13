@@ -6,13 +6,16 @@ import configuration.UtilDate;
 import com.toedter.calendar.JCalendar;
 import domain.Question;
 import javax.swing.*;
-import java.awt.*;
+
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.*;
 import java.beans.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import domain.Event;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -37,6 +40,8 @@ public class DuplicateGUI extends JFrame {
 
 	private DefaultTableModel tableModelEvents;
 	private DefaultTableModel tableModelQueries;
+	
+	private JFrame thisFrame;
 
 	
 	private String[] columnNamesEvents = new String[] {
@@ -50,6 +55,8 @@ public class DuplicateGUI extends JFrame {
 		
 
 	};
+	private final JButton btnClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close")); //$NON-NLS-1$ //$NON-NLS-2$
+
 
 	public DuplicateGUI(Event ev)
 	{
@@ -66,7 +73,7 @@ public class DuplicateGUI extends JFrame {
 	
 	private void jbInit(Event ev) throws Exception
 	{
-
+		thisFrame=this;
 		this.getContentPane().setLayout(null);
 		this.setSize(new Dimension(666, 335));
 		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("CreateEvent"));
@@ -199,22 +206,49 @@ public class DuplicateGUI extends JFrame {
 		jLabelMsg.setBounds(392, 226, 208, 31);
 		getContentPane().add(jLabelMsg);
 		
-		JButton btnDuplicateEvent = new JButton(ResourceBundle.getBundle("Etiquetas").getString("DeleteEvent"));
+		JButton btnDuplicateEvent = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Duplicate"));
 		btnDuplicateEvent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(jCalendar1.getDate()!=null) {	
-					jLabelMsg.setText(ResourceBundle.getBundle("Etiquetas").getString("NoEventSelected"));
+				boolean badago=false;
+			
+				Date d = jCalendar1.getDate();
+				DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+				Date date;
+				try {
+					date = formatter.parse(formatter.format(d));
+					if(date==null) {	
+//						jLabelMsg.setText(ResourceBundle.getBundle("Etiquetas").getString("NoDateSelected"));
+						System.out.println("ez du hartzen");
+					}
+					else {
+						
+						badago = facade.duplicate(ev, date);
+						if(badago) {
+							System.out.println("Badago");
+//							jLabelMsg.setText(ResourceBundle.getBundle("Etiquetas").getString("AlreadyExistsEvent"));
+						}
+					}
+					
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
-				else {
-					Date d = jCalendar1.getDate();
-					facade.duplicate(ev, d);
-				}
-				
 			}
 		});
 		btnDuplicateEvent.setBounds(new Rectangle(98, 420, 130, 30));
 		btnDuplicateEvent.setBounds(229, 244, 179, 30);
 		getContentPane().add(btnDuplicateEvent);
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFrame a = new CreateEventGUI();
+				thisFrame.setVisible(false);
+				a.setVisible(true);
+			}
+		});
+		btnClose.setBounds(29, 244, 179, 30);
+		
+		getContentPane().add(btnClose);
 
 	}
 }

@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
+import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
 
@@ -29,15 +30,16 @@ public class BetGUI extends JFrame {
 	private Registered user;
 	private Kuotak kuota;
 	private BLFacade fatxada;
+	private Vector<Kuotak> kuotalist;
 
 
 	/**
 	 * Create the frame.
 	 */
-	public BetGUI(User pUser,  Kuotak k) {
+	public BetGUI(User pUser,  Vector<Kuotak> k) {
 
 		this.user = (Registered) pUser;
-		kuota=k;
+		kuotalist=k;
 		fatxada = AdminGUI.getBusinessLogic();
 		thisFrame=this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,10 +49,17 @@ public class BetGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("QueryN")+this.kuota.getQuestion().getQuestion());
-		lblNewLabel.setBounds(60, 89, 238, 14);
-		contentPane.add(lblNewLabel);
-
+		if(k.size()==1) {
+			JLabel lblNewLabel = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("QueryN")+this.kuotalist.get(0).getQuestion().getQuestion());
+			lblNewLabel.setBounds(60, 89, 238, 14);
+			contentPane.add(lblNewLabel);
+		}else {
+//			JLabel lblNewLabel = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("QueryN")+this.kuota.getQuestion().getQuestion());
+			JLabel lblNewLabel = new JLabel("Multiple questions");
+			lblNewLabel.setBounds(60, 89, 238, 14);
+			contentPane.add(lblNewLabel);
+		}
+		
 		JLabel lblNewLabel_1 = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("MoneyAmount"));
 		lblNewLabel_1.setBounds(161, 152, 110, 14);
 		contentPane.add(lblNewLabel_1);
@@ -65,15 +74,27 @@ public class BetGUI extends JFrame {
 				if(textField.getText().isEmpty()) {
 					lblNewLabel_7.setText(ResourceBundle.getBundle("Etiquetas").getString("EnterAmount"));
 				}else {
+					double kuoTot=1;
+					for(Kuotak kuo:kuotalist) {
+						kuoTot*=kuo.getValue();
+					}
 					float a = Math.round(Float.parseFloat(textField.getText())*100);
 					a=a/100;
 					float b = user.getDirua();
-					if(kuota.getQuestion().getBetMinimum()>a) {
-						lblNewLabel_7.setText(ResourceBundle.getBundle("Etiquetas").getString("MinBet")+ kuota.getQuestion().getBetMinimum());
+					
+					float newMin = 0;
+					for(Kuotak kuo:kuotalist) {
+						if(kuo.getQuestion().getBetMinimum()>newMin) {
+							newMin=kuo.getQuestion().getBetMinimum();
+						}
+					}
+					
+					if(newMin>a) {
+						lblNewLabel_7.setText(ResourceBundle.getBundle("Etiquetas").getString("MinBet")+ newMin);
 					}else
 						if(b-a>=0) {
 							lblNewLabel_7.setText(ResourceBundle.getBundle("Etiquetas").getString("MakeBet"));
-							fatxada.makeBet(user, a,kuota);
+							fatxada.makeBet(user, a,kuotalist);
 							try {
 								TimeUnit.SECONDS.sleep(2);
 							} catch (InterruptedException e1) {
@@ -98,17 +119,33 @@ public class BetGUI extends JFrame {
 		contentPane.add(textField);
 		textField.setColumns(10);
 
-		JLabel lblNewLabel_2 = new JLabel(kuota.getPronostico());
-		lblNewLabel_2.setBounds(70, 114, 166, 14);
-		contentPane.add(lblNewLabel_2);
-
+		if(k.size()==1) {
+			JLabel lblNewLabel_2 = new JLabel(kuotalist.get(0).getPronostico());
+			lblNewLabel_2.setBounds(70, 114, 166, 14);
+			contentPane.add(lblNewLabel_2);
+		}else {
+//			JLabel lblNewLabel_2 = new JLabel(kuota.getPronostico());
+			JLabel lblNewLabel_2 = new JLabel("Multiple forecasts");
+			lblNewLabel_2.setBounds(70, 114, 166, 14);
+			contentPane.add(lblNewLabel_2);
+		}
 		JLabel lblNewLabel_3 = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("FeeValue"));
 		lblNewLabel_3.setBounds(300, 89, 96, 14);
 		contentPane.add(lblNewLabel_3);
-
-		JLabel lblNewLabel_4 = new JLabel((""+kuota.getValue()));
-		lblNewLabel_4.setBounds(300, 117, 68, 14);
-		contentPane.add(lblNewLabel_4);
+		
+		if(k.size()==1) {
+			JLabel lblNewLabel_4 = new JLabel((""+kuotalist.get(0).getValue()));
+			lblNewLabel_4.setBounds(300, 117, 68, 14);
+			contentPane.add(lblNewLabel_4);
+		}else {
+			double kuoTot=1;
+			for(Kuotak kuo:kuotalist) {
+				kuoTot*=kuo.getValue();
+			}
+			JLabel lblNewLabel_4 = new JLabel((""+kuoTot));
+			lblNewLabel_4.setBounds(300, 117, 68, 14);
+			contentPane.add(lblNewLabel_4);
+		}
 
 		JButton btnNewButton_1 = new JButton();
 		btnNewButton_1.setText(ResourceBundle.getBundle("Etiquetas").getString("Close"));

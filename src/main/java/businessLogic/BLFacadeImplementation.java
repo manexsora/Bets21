@@ -186,9 +186,9 @@ public class BLFacadeImplementation  implements BLFacade {
 	}
 
 	@WebMethod
-	public void makeBet(Registered User, float betValue, Kuotak kuota) {
+	public void makeBet(Registered User, float betValue, Vector<Kuotak> kuotalist) {
 		dbManager.open(false);
-    	dbManager.makeBet(User,betValue,kuota);
+    	dbManager.makeBet(User,betValue,kuotalist);
     	dbManager.close();
 	}
 	
@@ -237,6 +237,15 @@ public class BLFacadeImplementation  implements BLFacade {
 		boolean a = dbManager.isRegister(noriIz);
 		if(a == false) return false;
 		a = dbManager.mezuaBidali(noriIz,norkIz,asun,ed);
+		dbManager.close();
+		return a;
+	}
+
+	@Override
+	public boolean duplicate(Event ev, Date d) {
+		boolean a;
+		dbManager.open(false);
+		a = dbManager.duplicate(ev, d);
 		dbManager.close();
 		return a;
 	}

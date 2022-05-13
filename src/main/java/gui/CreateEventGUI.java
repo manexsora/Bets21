@@ -40,6 +40,8 @@ public class CreateEventGUI extends JFrame {
 
 	private DefaultTableModel tableModelEvents;
 	private DefaultTableModel tableModelQueries;
+	
+	private JFrame thisFrame;
 
 	
 	private String[] columnNamesEvents = new String[] {
@@ -73,6 +75,7 @@ public class CreateEventGUI extends JFrame {
 	private void jbInit() throws Exception
 	{
 
+		thisFrame=this;
 		this.getContentPane().setLayout(null);
 		this.setSize(new Dimension(666, 393));
 		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("CreateEvent"));
@@ -83,7 +86,7 @@ public class CreateEventGUI extends JFrame {
 		this.getContentPane().add(jLabelEventDate, null);
 		this.getContentPane().add(jLabelEvents);
 
-		jButtonClose.setBounds(new Rectangle(87, 314, 130, 30));
+		jButtonClose.setBounds(new Rectangle(20, 314, 130, 30));
 
 		jButtonClose.addActionListener(new ActionListener()
 		{
@@ -240,7 +243,7 @@ public class CreateEventGUI extends JFrame {
 			}
 		});
 		btnCreate.setBounds(new Rectangle(98, 420, 130, 30));
-		btnCreate.setBounds(266, 314, 130, 30);
+		btnCreate.setBounds(160, 314, 130, 30);
 		
 		getContentPane().add(btnCreate);
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -275,7 +278,24 @@ public class CreateEventGUI extends JFrame {
 		});
 		btnDeleteEvent.setBounds(new Rectangle(98, 420, 130, 30));
 		btnDeleteEvent.setBounds(459, 314, 179, 30);
-		getContentPane().add(btnDeleteEvent);
+		getContentPane().add(btnDeleteEvent);	
+		JButton btnDuplicate = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Duplicate"));
+		btnDuplicate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int r = tableEvents.getSelectedRow();
+				if(r==-1) {
+//					jLabelMsg.setText(ResourceBundle.getBundle("Etiquetas").getString("NoEventSelected"));
+				}
+				else {
+					domain.Event ev=(domain.Event)tableModelEvents.getValueAt(r,2);
+					JFrame a = new DuplicateGUI(ev);
+					thisFrame.setVisible(false);
+					a.setVisible(true);
+				}
+			}
+		});
+		btnDuplicate.setBounds(300, 314, 149, 30);
+		getContentPane().add(btnDuplicate);
 
 	}
 

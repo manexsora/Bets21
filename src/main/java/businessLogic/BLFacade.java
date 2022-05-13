@@ -80,7 +80,7 @@ public interface BLFacade  {
 	
 	@WebMethod public void depositMoney(Registered user, Float amount);
 
-	@WebMethod void makeBet(Registered User, float betValue, Kuotak kuota);
+	@WebMethod void makeBet(Registered User, float betValue, Vector<Kuotak> kuotalist);
 	
 	@WebMethod Kuotak createFee(Question q, String ema, float fee) throws EventFinished, FeeAlreadyExist;
 	
@@ -92,5 +92,6 @@ public interface BLFacade  {
 	
 	@WebMethod boolean mezuaBidali(String noriIz, String norkIz, String asun, String ed);
 
+	@WebMethod boolean duplicate(Event ev, Date d);
 	
 }

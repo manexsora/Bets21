@@ -129,6 +129,9 @@ public class DataAccess  {
 			User u1 = new Admin("admin", "anus", "Admin el capo", "admin");
 			Registered a = new Registered("a","a","a","a");
 			Kuotak f1=q1.addFee("a", 2);
+			Kuotak f2=q1.addFee("b",2);
+			Kuotak f3=q2.addFee("c",2);
+			a.setDirua(69);
 
 			db.persist(u1);
 			db.persist(a);
@@ -354,22 +357,34 @@ public class DataAccess  {
 
 	}
 
-	public void makeBet(Registered user, float betValue, Kuotak kuota) {
+	public void makeBet(Registered user, float betValue, Vector<Kuotak> kuot) {
 		User bo = db.find(User.class, user.getUsername());
-		Kuotak ku = db.find(Kuotak.class, kuota.getFeeN());
+		Vector<Kuotak> kuotalist = new Vector<Kuotak>(); 
+		for(Kuotak kuo:kuot) {
+			Kuotak ku = db.find(Kuotak.class, kuo.getFeeN());
+			kuotalist.add(ku);
+		}
 		Registered us = (Registered) bo;
 		float a = us.getDirua()-betValue;
 		us.setDirua(a);
 		user.setDirua(a);
 		user.addMovement(betValue, 2);
-		Movement m = us.addMovement(betValue, 2);
-		user.addBets(betValue,kuota);
-		Bet b = us.addBets(betValue, kuota);
-		kuota.addBet(b);
-		ku.addBet(b);
+		us.addMovement(betValue, 2);
+ 
+		user.addBet(betValue,kuot);
+		Bet b = us.addBet(betValue, kuotalist);
+		for(Kuotak kk:kuot) {
+			kk.addBet(b);
+		}
+
+		for(Kuotak kk:kuotalist) {
+			kk.addBet(b);
+		}
+
+
+
 		db.getTransaction().begin();
 		db.persist(us);
-		db.persist(ku);
 		db.getTransaction().commit();
 		user.getBets().get(user.getBets().size()-1).setBetNumber(us.getBets().get(user.getBets().size()-1).getBetNumber());
 	}
@@ -395,23 +410,28 @@ public class DataAccess  {
 		User u = db.find(User.class, user.getUsername());
 		Registered us = (Registered) u;
 		Bet be = db.find(Bet.class, b.getBetNumber());
-		Kuotak ku = db.find(Kuotak.class, b.getKuota().getFeeN());
+		Vector<Kuotak> kuotalist = new Vector<Kuotak>();
+		for(Kuotak k: b.getKuotaList()) {
+			Kuotak ku = db.find(Kuotak.class, k.getFeeN());
+			kuotalist.add(ku);
+		}
 		float a = us.getDirua()+b.getApostatutakoDiruKop();
 		us.setDirua(a);
 		user.setDirua(a);
 		user.addMovement(b.getApostatutakoDiruKop(), 3);
-		Movement mo = us.addMovement(b.getApostatutakoDiruKop(), 3);
+		us.addMovement(b.getApostatutakoDiruKop(), 3);
 		us.deleteBet(be);
 		user.deleteBet(b);
-		ku.deleteBet(be);
+		for(Kuotak ku: kuotalist) {
+			ku.deleteBet(be);
+		}
 		db.getTransaction().begin();
 		db.remove(be);
 		db.persist(us);
-		db.persist(ku);
 		db.getTransaction().commit();
 
 	}
-
+	//APOSTU ANITZETAN, ASMATUTAKO APOSTURENBAT BADAGO, ASMATU GABEKO BATEKIN BATERA, ASMATU DEN APOSTUA DATUBASEAN GERATUKO DA NULL BALIOEKIN ATRIBUTUETAN(ez dakigu arazorik emango duen ala ez)
 	public void markResult(Kuotak k) {
 		Kuotak ku = db.find(Kuotak.class, k);
 		Question q = db.find(Question.class, k.getQuestion());
@@ -424,19 +444,38 @@ public class DataAccess  {
 				User u = db.find(User.class, b.getUser().getUsername());
 				Registered us = (Registered) u;
 				Bet be = db.find(Bet.class, b.getBetNumber());	
-				Float a = (float) (be.getApostatutakoDiruKop()*ku.getValue())+us.getDirua();
-				us.setDirua(a);
-				b.getUser().setDirua(a);
-				b.getUser().addMovement((float) (be.getApostatutakoDiruKop()*ku.getValue()), 4);
-				Movement mo = us.addMovement((float) (be.getApostatutakoDiruKop()*ku.getValue()), 4);
-				us.deleteBet(be);
-				b.getUser().deleteBet(b);
-				ku.deleteBet(be);
-				db.getTransaction().begin();
-				db.remove(be);
-				db.persist(us);
-				db.persist(ku);
-				db.getTransaction().commit();
+				if(b.getKuotaList().size()==1) {
+					
+					Float a = (float) (be.getApostatutakoDiruKop()*ku.getValue())+us.getDirua();
+					us.setDirua(a);
+					b.getUser().setDirua(a);
+					b.getUser().addMovement((float) (be.getApostatutakoDiruKop()*ku.getValue()), 4);
+					us.addMovement((float) (be.getApostatutakoDiruKop()*ku.getValue()), 4);
+					us.deleteBet(be);
+					b.getUser().deleteBet(b);
+					ku.deleteBet(be);
+					db.getTransaction().begin();
+					db.remove(be);
+					db.persist(us);
+					db.persist(ku);
+					db.getTransaction().commit();
+				}else {
+					if(be.hasResultList()) {
+						Float a = (float) (be.getApostatutakoDiruKop()*b.getKuotaTot())+us.getDirua();
+						us.setDirua(a);
+						b.getUser().setDirua(a);
+						b.getUser().addMovement((float) (be.getApostatutakoDiruKop()*b.getKuotaTot()), 4);
+						us.addMovement((float) (be.getApostatutakoDiruKop()*b.getKuotaTot()), 4);
+						us.deleteBet(be);
+						b.getUser().deleteBet(b);
+						ku.deleteBet(be);
+						db.getTransaction().begin();
+						db.remove(be);
+						db.persist(us);
+						db.persist(ku);
+						db.getTransaction().commit();
+					}
+				}
 			}
 		}
 
@@ -509,6 +548,48 @@ public class DataAccess  {
 		db.persist(nork);
 		db.getTransaction().commit();
 		return true;
+	}
+	
+	public boolean duplicate(Event evi, Date d) {
+		if(alreadyExistsEvent(evi,d)) {
+			return true;
+		}
+		Event event = db.find(Event.class, evi);
+		String des = event.getDescription();
+		Vector<Question> questions = event.getQuestions();
+		Event nEvent = new Event(des, d);
+		for(Question q: questions) {
+			float minB = q.getBetMinimum();
+			String quer = q.getQuestion();
+			Question qu= new Question(quer, minB, nEvent);
+			nEvent.addQuestion(q);
+			Vector<Kuotak> fees = q.getFees();
+			Vector<Kuotak> UnekoFee = q.getFees();
+			for(Kuotak f: fees) {
+				String pron = f.getPronostico();
+				double val = f.getValue();
+				Kuotak ku = new Kuotak(pron, val, q);
+				qu.addFee(ku);
+			}
+		}
+		db.getTransaction().begin();
+		db.persist(event);
+		db.persist(nEvent);
+		db.getTransaction().commit();
+		return false;
+		
+		
+	}
+	
+	public boolean alreadyExistsEvent(Event evi,Date d) {
+		TypedQuery<Event> query = db.createQuery("SELECT ev FROM Event ev WHERE ev.eventDate=?1 and ev.description=?2",Event.class);   
+		query.setParameter(1, d);
+		query.setParameter(2, evi.getDescription());
+		List<Event> events = query.getResultList();
+		if(!events.isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 
 
