@@ -337,7 +337,7 @@ public class FindQuestionsGUI extends JFrame {
 		tableFee.getColumnModel().getColumn(1).setPreferredWidth(93);
 		
 		
-		JButton btnAddToBet = new JButton(ResourceBundle.getBundle("Etiquetas").getString("FindQuestionsGUI.btnNewButton.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		JButton btnAddToBet = new JButton("Add"); //$NON-NLS-1$ //$NON-NLS-2$
 		btnAddToBet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tableFee.getSelectedRow()!=-1) {
@@ -387,7 +387,7 @@ public class FindQuestionsGUI extends JFrame {
 		
 
 		
-		JLabel lblCurrentBets = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("FindQuestionsGUI.lblNewLabel.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		JLabel lblCurrentBets = new JLabel(""); //$NON-NLS-1$ //$NON-NLS-2$
 		lblCurrentBets.setBounds(695, 57, 175, 14);
 		getContentPane().add(lblCurrentBets);
 		
