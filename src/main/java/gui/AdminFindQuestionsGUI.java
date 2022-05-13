@@ -59,7 +59,7 @@ public class AdminFindQuestionsGUI extends JFrame {
 			ResourceBundle.getBundle("Etiquetas").getString("Query"),
 
 	};
-	private final JButton btnApostatu = new JButton(ResourceBundle.getBundle("Etiquetas").getString("CreateFee")); //$NON-NLS-1$ //$NON-NLS-2$
+	private final JButton btnCreateFee = new JButton(ResourceBundle.getBundle("Etiquetas").getString("CreateFee")); //$NON-NLS-1$ //$NON-NLS-2$
 	
 	private String[] columnNamesFee = new String[] {
 			ResourceBundle.getBundle("Etiquetas").getString("Forecast"), 
@@ -304,7 +304,7 @@ public class AdminFindQuestionsGUI extends JFrame {
 		tableFee.getColumnModel().getColumn(1).setPreferredWidth(93);
 
 		
-		btnApostatu.addActionListener(new ActionListener() {
+		btnCreateFee.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tableQueries.getSelectedRow()==-1) {
 					lblmarked.setText("Select a question");
@@ -317,10 +317,10 @@ public class AdminFindQuestionsGUI extends JFrame {
 				}
 			}
 		});
-		btnApostatu.setBounds(new Rectangle(98, 420, 130, 30));
-		btnApostatu.setBounds(476, 420, 130, 30);
+		btnCreateFee.setBounds(new Rectangle(98, 420, 130, 30));
+		btnCreateFee.setBounds(476, 420, 130, 30);
 		
-		getContentPane().add(btnApostatu);
+		getContentPane().add(btnCreateFee);
 		
 		JButton btnEmaitza = new JButton(ResourceBundle.getBundle("Etiquetas").getString("MarkAsResult"));
 		btnEmaitza.addActionListener(new ActionListener() {
@@ -332,7 +332,6 @@ public class AdminFindQuestionsGUI extends JFrame {
 					int i=tableFee.getSelectedRow();
 					domain.Kuotak k=(domain.Kuotak)tableModelFee.getValueAt(i,2);
 					if(!k.getQuestion().hasSolution()) {
-
 						facade.markResult(k);
 						lblmarked.setText(ResourceBundle.getBundle("Etiquetas").getString("NoSolution"));
 					}else {

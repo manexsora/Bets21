@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 
 import businessLogic.BLFacade;
 import domain.Bet;
+import domain.Kuotak;
 import domain.Movement;
 import domain.Registered;
 import domain.User;
@@ -18,6 +19,8 @@ import domain.User;
 import java.awt.ScrollPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
@@ -39,6 +42,8 @@ public class DeleteBetsGUI extends JFrame {
 	private BLFacade fatxada;
 	private JLabel lblBet;
 	private JButton btnNewButton=new JButton(ResourceBundle.getBundle("Etiquetas").getString("DeleteBet"));
+	private JTable tableDetail= new JTable();
+	private DefaultTableModel tableModelDetail;
 
 
 	/**
@@ -66,6 +71,12 @@ public class DeleteBetsGUI extends JFrame {
 
 	};
 
+	private String[] columnNamesDetail = new String[] {
+			ResourceBundle.getBundle("Etiquetas").getString("Question"), 
+			ResourceBundle.getBundle("Etiquetas").getString("Forecast")
+
+	};
+	
 	/**
 	 * Create the frame.
 	 */
@@ -74,7 +85,7 @@ public class DeleteBetsGUI extends JFrame {
 		thisFrame=this;
 		this.user=user;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 755, 307);
+		setBounds(100, 100, 1042, 420);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -97,8 +108,10 @@ public class DeleteBetsGUI extends JFrame {
 		contentPane.add(lblNewLabel);
 
 		JScrollPane MovementScrollPane = new JScrollPane();
-		MovementScrollPane.setBounds(80, 45, 578, 158);
+		MovementScrollPane.setBounds(80, 45, 578, 268);
 		contentPane.add(MovementScrollPane);
+		
+
 
 
 
@@ -126,15 +139,24 @@ public class DeleteBetsGUI extends JFrame {
 			lblNewLabel.setText( ResourceBundle.getBundle("Etiquetas").getString("NoBetsToShow"));
 
 		}else {
+
 			for (Bet bet:user.getBets()){
 				Vector<Object> row = new Vector<Object>();
-
-				row.add(bet.getKuota().getQuestion().getQuestion());
-				row.add(bet.getKuota().getPronostico());
-				row.add(bet.getKuota().getValue());
-				row.add(bet.getApostatutakoDiruKop());
-				row.add(bet);
-				tableModelMovements.addRow(row);	
+				if(bet.getKuotaList().size()==1) {
+					row.add(bet.getKuotaList().get(0).getQuestion().getQuestion());
+					row.add(bet.getKuotaList().get(0).getPronostico());
+					row.add(bet.getKuotaList().get(0).getValue());
+					row.add(bet.getApostatutakoDiruKop());
+					row.add(bet);
+					tableModelMovements.addRow(row);
+				}else {
+					row.add("Multiple questions");
+					row.add("Multiple forecasts");
+					row.add(bet.getKuotaTot());
+					row.add(bet.getApostatutakoDiruKop());
+					row.add(bet);
+					tableModelMovements.addRow(row);
+				}
 			}
 		}
 
@@ -148,7 +170,7 @@ public class DeleteBetsGUI extends JFrame {
 		JLabel lblNewLabel_1 = new JLabel();
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_1.setText(ResourceBundle.getBundle("Etiquetas").getString("DeleteChosenBet"));
-		lblNewLabel_1.setBounds(20, 234, 476, 26);
+		lblNewLabel_1.setBounds(26, 324, 476, 26);
 		contentPane.add(lblNewLabel_1);
 
 		btnNewButton = new JButton();
@@ -166,7 +188,7 @@ public class DeleteBetsGUI extends JFrame {
 			}
 		});
 
-		btnNewButton.setBounds(520, 236, 156, 23);
+		btnNewButton.setBounds(526, 326, 156, 23);
 
 		contentPane.add(btnNewButton);
 		
@@ -177,6 +199,64 @@ public class DeleteBetsGUI extends JFrame {
 		lblBet = new JLabel();
 		lblBet.setBounds(310, 249, 119, 21);
 		contentPane.add(lblBet);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(713, 45, 283, 268);
+		contentPane.add(scrollPane);
+		
+
+		tableMovements.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int i=tableMovements.getSelectedRow();
+				domain.Bet b=(domain.Bet)tableModelMovements.getValueAt(i,4); // obtain q object
+				if(b.getKuotaList().size()>1) {
+					Vector<Kuotak> kuo=b.getKuotaList();
+
+					tableModelDetail.setDataVector(null, columnNamesDetail);
+					tableModelDetail.setColumnCount(3);
+
+					//				if (kuo.isEmpty())
+					//					jLabelQueries.setText( ResourceBundle.getBundle("Etiquetas").getString("NoFees")+": "+q.getQuestion());
+					//				else 
+					//					jLabelQueries.setText( ResourceBundle.getBundle("Etiquetas").getString("SelectedEvent")+" "+q.getQuestion());
+
+					for (domain.Kuotak k:kuo){
+						Vector<Object> row = new Vector<Object>();
+
+						row.add(k.getQuestion().getQuestion());
+						row.add(k.getPronostico());
+						row.add(k);
+						tableModelDetail.addRow(row);	
+					}
+					try {
+
+						tableDetail.getColumnModel().getColumn(0).setPreferredWidth(150);
+						tableDetail.getColumnModel().getColumn(1).setPreferredWidth(93);
+						tableDetail.getColumnModel().removeColumn(tableDetail.getColumnModel().getColumn(2));
+					}
+					catch(Exception exx) {
+
+					}
+				}
+			}
+		});
+
+		scrollPane.setViewportView(tableDetail);
+		tableModelDetail = new DefaultTableModel(null, columnNamesDetail);
+
+		tableDetail.setModel(tableModelDetail);
+		
+		tableDetail.getColumnModel().getColumn(0).setPreferredWidth(150);
+		tableDetail.getColumnModel().getColumn(1).setPreferredWidth(93);
+		
+		
+		
+		
+		
+		JLabel lblNewLabel_2 = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("DeleteBetsGUI.lblNewLabel_2.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		lblNewLabel_2.setBounds(713, 20, 96, 14);
+		contentPane.add(lblNewLabel_2);
 
 
 
