@@ -128,7 +128,7 @@ public class MezuakIkusiGUI extends JFrame {
 		else{
 			for(Mezua mz:user.getJasoak()) {
 				Vector<Object> row = new Vector<Object>();
-				row.add(mz.getNork());
+				row.add(mz.getNork().getUsername());
 				row.add(mz.getAsuntua());
 				row.add(mz);
 				tableModelMsj.addRow(row);				
