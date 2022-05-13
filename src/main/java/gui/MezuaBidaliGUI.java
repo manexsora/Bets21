@@ -17,17 +17,18 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextPane;
 
 public class MezuaBidaliGUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField NoriTxtBox;
 	private JTextField asuntoBox;
-	private JTextField EdukiaBox;
+	JTextPane EdukiaBox;
 
 	private static Registered user;
 	private BLFacade fatxada;
-	MezuaBidaliGUI thisframe;
+	JFrame thisframe;
 	public static Registered getUser() {
 		return user;
 	}
@@ -39,7 +40,7 @@ public class MezuaBidaliGUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MezuaBidaliGUI frame = new MezuaBidaliGUI(getUser());
+					MezuaBidaliGUI frame = new MezuaBidaliGUI(getUser(),"","  ");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -51,9 +52,10 @@ public class MezuaBidaliGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public MezuaBidaliGUI(Registered us) {
+	public MezuaBidaliGUI(Registered us,String s,String as) {
 		MezuaBidaliGUI.user=us;
 		fatxada = AdminGUI.getBusinessLogic();
+		thisframe=this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 506, 374);
 		contentPane = new JPanel();
@@ -61,7 +63,7 @@ public class MezuaBidaliGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		NoriTxtBox = new JTextField();
+		NoriTxtBox = new JTextField(s);
 		NoriTxtBox.setBounds(46, 68, 96, 20);
 		contentPane.add(NoriTxtBox);
 		NoriTxtBox.setColumns(10);
@@ -80,8 +82,14 @@ public class MezuaBidaliGUI extends JFrame {
 		AsuntoLbl.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		AsuntoLbl.setBounds(49, 100, 93, 14);
 		contentPane.add(AsuntoLbl);
-		
-		asuntoBox = new JTextField();
+		String tema;
+		if(as.equals("")) { //Erantzuna edo ez
+			tema = as;
+		}
+		else {
+			tema = "Re: " + as;
+		}
+		asuntoBox = new JTextField(tema);
 		asuntoBox.setColumns(10);
 		asuntoBox.setBounds(46, 119, 118, 20);
 		contentPane.add(asuntoBox);
@@ -90,11 +98,6 @@ public class MezuaBidaliGUI extends JFrame {
 		lblEdukia.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		lblEdukia.setBounds(49, 160, 93, 14);
 		contentPane.add(lblEdukia);
-		
-		EdukiaBox = new JTextField();
-		EdukiaBox.setColumns(10);
-		EdukiaBox.setBounds(46, 179, 360, 95);
-		contentPane.add(EdukiaBox);
 		
 		JLabel EmaitzaLabel = new JLabel("");
 		EmaitzaLabel.setBounds(46, 286, 214, 50);
@@ -118,5 +121,19 @@ public class MezuaBidaliGUI extends JFrame {
 		});
 		bidaliBtn.setBounds(338, 300, 89, 23);
 		contentPane.add(bidaliBtn);
+		
+		JButton btnClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				thisframe.setVisible(false);
+			}
+		});
+		btnClose.setBounds(25, 11, 89, 23);
+		contentPane.add(btnClose);
+		
+		EdukiaBox = new JTextPane();
+		EdukiaBox.setText(""); //$NON-NLS-1$ //$NON-NLS-2$
+		EdukiaBox.setBounds(46, 188, 367, 101);
+		contentPane.add(EdukiaBox);
 	}
 }

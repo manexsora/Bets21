@@ -47,6 +47,7 @@ public class RegisteredUserGUI extends JFrame {
 	private JButton depositMoneybtn;
 	private JButton movementsBtn;
 	private JButton btnNewButton;
+	private JButton btnNewButton_2;
 	/**
 	 * This is the default constructor
 	 */
@@ -113,6 +114,7 @@ public class RegisteredUserGUI extends JFrame {
 			CurrentMoneyLabel.setBounds(460, 120, 86, 20);
 			jContentPane.add(CurrentMoneyLabel);
 			jContentPane.add(getBtnNewButton());
+			jContentPane.add(getBtnNewButton_2());
 		}
 		return jContentPane;
 	}
@@ -203,5 +205,19 @@ public class RegisteredUserGUI extends JFrame {
 			btnNewButton.setBounds(10, 45, 132, 23);
 		}
 		return btnNewButton;
+	}
+	private JButton getBtnNewButton_2() {
+		if (btnNewButton_2 == null) {
+			btnNewButton_2 = new JButton(ResourceBundle.getBundle("Etiquetas").getString("RegisteredUserGUI.btnNewButton_2.text")); //$NON-NLS-1$ //$NON-NLS-2$
+			btnNewButton_2.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					MezuakIkusiGUI b = new MezuakIkusiGUI(user);
+					b.setVisible(true);
+					thisframe.setVisible(false);
+				}
+			});
+			btnNewButton_2.setBounds(10, 82, 103, 23);
+		}
+		return btnNewButton_2;
 	}
 } // @jve:decl-index=0:visual-constraint="0,0

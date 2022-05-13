@@ -26,6 +26,12 @@ public class Registered extends User{
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private Vector<Mezua> jasoak = new Vector<Mezua>();
 	
+	public Vector<Mezua> getJasoak() {
+		return jasoak;
+	}
+	public void setJasoak(Vector<Mezua> jasoak) {
+		this.jasoak = jasoak;
+	}
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private Vector<Jarraitu> jarraitzaileak = new Vector<Jarraitu>();
 
