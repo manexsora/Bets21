@@ -94,4 +94,8 @@ public interface BLFacade  {
 
 	@WebMethod boolean duplicate(Event ev, Date d);
 	
+	@WebMethod Registered getUser(String usrname);
+	
+	@WebMethod void changePass(Registered us, String pass);
+	
 }

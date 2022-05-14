@@ -249,6 +249,23 @@ public class BLFacadeImplementation  implements BLFacade {
 		dbManager.close();
 		return a;
 	}
+
+	@Override
+	public Registered getUser(String usrname) {
+		Registered a;
+		dbManager.open(false);
+		a = dbManager.getUser(usrname);
+		dbManager.close();
+		return a;
+	}
+
+	@Override
+	public void changePass(Registered us, String pass) {
+		dbManager.open(false);
+		dbManager.changePass(us, pass);
+		dbManager.close();
+		
+	}
 }
 	
 

@@ -36,6 +36,9 @@ public abstract class User {
 		// TODO Auto-generated constructor stub
 	}
 
+	public String getEmail() {
+		return emaila;
+	}
 
 	public String getUsername() {
 		return username;

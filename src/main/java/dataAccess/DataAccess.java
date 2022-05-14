@@ -127,7 +127,7 @@ public class DataAccess  {
 			}
 
 			User u1 = new Admin("admin", "anus", "Admin el capo", "admin");
-			Registered a = new Registered("a","a","a","a");
+			Registered a = new Registered("a","andonisudupeehu@gmail.com","a","a");
 			Kuotak f1=q1.addFee("a", 2);
 			Kuotak f2=q1.addFee("b",2);
 			Kuotak f3=q2.addFee("c",2);
@@ -590,6 +590,19 @@ public class DataAccess  {
 			return true;
 		}
 		return false;
+	}
+	
+	public Registered getUser(String usrname) {
+		Registered a = db.find(Registered.class, usrname);
+		return a;
+	}
+	
+	public void changePass(Registered us, String pass) {
+		Registered user = db.find(Registered.class, us.getUsername());
+		user.setPassWord(pass);
+		db.getTransaction().begin();
+		db.persist(user);
+		db.getTransaction().commit();
 	}
 
 

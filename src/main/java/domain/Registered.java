@@ -67,6 +67,10 @@ public class Registered extends User{
 		return mov;
 	}
 	
+	public String getEmail() {
+		return super.getEmail();
+	}
+	
 	public float getDirua() {
 		return dirua;
 	}

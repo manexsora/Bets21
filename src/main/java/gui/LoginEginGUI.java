@@ -14,6 +14,7 @@ import businessLogic.BLFacadeImplementation;
 import domain.Admin;
 import domain.Registered;
 import domain.User;
+import mail.Mail;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -32,6 +33,7 @@ public class LoginEginGUI extends JFrame {
 	private JPasswordField passWordtext;
 	private JFrame thisframe;
 	private BLFacade fatxada;
+	private Mail mail = new Mail();
 
 	/**
 	 * Launch the application.
@@ -137,6 +139,20 @@ public class LoginEginGUI extends JFrame {
 		});
 		btnNewButton.setBounds(10, 0, 96, 23);
 		contentPane.add(btnNewButton);
+		
+		JButton btnChangePass = new JButton(ResourceBundle.getBundle("Etiquetas").getString("ChangePass")); //$NON-NLS-1$ //$NON-NLS-2$
+		btnChangePass.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(userText.getText()!=null) {
+					Registered us = fatxada.getUser(userText.getText());
+					String code= mail.sendEmail(us.getEmail());
+					JFrame a = new VerificateGUI(us, code);
+					a.setVisible(true);
+				}
+			}
+		});
+		btnChangePass.setBounds(306, 0, 118, 23);
+		contentPane.add(btnChangePass);
 
 
 		}
