@@ -57,11 +57,11 @@ public class ChangePassGUI extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblNewPass = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("NewPass"));
-		lblNewPass.setBounds(35, 96, 116, 14);
+		lblNewPass.setBounds(35, 96, 184, 14);
 		contentPane.add(lblNewPass);
 		
 		JLabel lblConfirmPass = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("ConfirmNewPass"));
-		lblConfirmPass.setBounds(35, 166, 116, 14);
+		lblConfirmPass.setBounds(35, 166, 184, 14);
 		contentPane.add(lblConfirmPass);
 		
 		JButton btnEnter = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Accept"));
@@ -87,11 +87,11 @@ public class ChangePassGUI extends JFrame {
 		contentPane.add(btnClose);
 		
 		passwordField = new JPasswordField();
-		passwordField.setBounds(186, 93, 132, 20);
+		passwordField.setBounds(267, 93, 132, 20);
 		contentPane.add(passwordField);
 		
 		confirmPasswordField = new JPasswordField();
-		confirmPasswordField.setBounds(186, 163, 132, 20);
+		confirmPasswordField.setBounds(267, 163, 132, 20);
 		contentPane.add(confirmPasswordField);
 	}
 }

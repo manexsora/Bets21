@@ -151,7 +151,7 @@ public class LoginEginGUI extends JFrame {
 				}
 			}
 		});
-		btnChangePass.setBounds(306, 0, 118, 23);
+		btnChangePass.setBounds(263, 0, 161, 23);
 		contentPane.add(btnChangePass);
 
 

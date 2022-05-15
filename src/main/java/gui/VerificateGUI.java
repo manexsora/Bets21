@@ -49,7 +49,7 @@ public class VerificateGUI extends JFrame {
 	public VerificateGUI(Registered pUs, String pCode) {
 		thisframe=this;
 		this.us=pUs;
-		this.code=code;
+		this.code=pCode;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -62,15 +62,15 @@ public class VerificateGUI extends JFrame {
 		contentPane.add(textFieldCode);
 		textFieldCode.setColumns(10);
 		
-		lblMessageBeenSent = new JLabel("New label");
-		lblMessageBeenSent.setBounds(59, 68, 284, 14);
+		lblMessageBeenSent = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("MessageBeenSent"));
+		lblMessageBeenSent.setBounds(39, 68, 363, 14);
 		contentPane.add(lblMessageBeenSent);
 		
-		JLabel lblEnterCode = new JLabel("New label");
-		lblEnterCode.setBounds(59, 126, 95, 14);
+		JLabel lblEnterCode = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("EnterCode"));
+		lblEnterCode.setBounds(39, 126, 137, 14);
 		contentPane.add(lblEnterCode);
 		
-		JButton btnEnter = new JButton("New button");
+		JButton btnEnter = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Accept"));
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(textFieldCode.getText()!=null) {
@@ -100,7 +100,7 @@ public class VerificateGUI extends JFrame {
 				code = mail.sendEmail(us.getEmail());
 			}
 		});
-		btnSendAgain.setBounds(335, 11, 89, 23);
+		btnSendAgain.setBounds(280, 11, 144, 23);
 		contentPane.add(btnSendAgain);
 	}
 }
