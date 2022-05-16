@@ -95,13 +95,13 @@ public class LoginEginGUI extends JFrame {
 				User a =fatxada.isLogin(userText.getText(), String.valueOf(passWordtext.getPassword()));
 				if (a == null) {
 					//ez erregistratua edo pasahitz okerra
-					testuEmaitza.setText("Pasahitz edo erabiltzaile okerra");
-					userText.setText(" ");
+					testuEmaitza.setText(ResourceBundle.getBundle("Etiquetas").getString("WrongUsr"));
+					userText.setText("");
 					passWordtext.setText("");
 				}
 				else {
 					if(a instanceof Registered) { //Erabiltzaile normal
-						testuEmaitza.setText("Ongi etorri");
+						testuEmaitza.setText(ResourceBundle.getBundle("Etiquetas").getString("Welcome"));
 						RegisteredUserGUI b = new RegisteredUserGUI(a);
 
 						thisframe.setVisible(false);
@@ -112,7 +112,7 @@ public class LoginEginGUI extends JFrame {
 
 						JFrame adminInt = new AdminGUI(a);
 
-						testuEmaitza.setText("Ongi etorri");
+						testuEmaitza.setText(ResourceBundle.getBundle("Etiquetas").getString("Welcome"));
 						adminInt.setVisible(true);
 						thisframe.setVisible(false);
 
@@ -129,7 +129,7 @@ public class LoginEginGUI extends JFrame {
 		lblNewLabel_2.setBounds(185, 23, 70, 32);
 		contentPane.add(lblNewLabel_2);
 
-		JButton btnNewButton = new JButton("Close");
+		JButton btnNewButton = new JButton();
 		btnNewButton.setText(ResourceBundle.getBundle("Etiquetas").getString("Close"));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -143,11 +143,14 @@ public class LoginEginGUI extends JFrame {
 		JButton btnChangePass = new JButton(ResourceBundle.getBundle("Etiquetas").getString("ChangePass")); //$NON-NLS-1$ //$NON-NLS-2$
 		btnChangePass.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(userText.getText()!=null) {
+				if(!userText.getText().equals("")) {
+					testuEmaitza.setText(ResourceBundle.getBundle("Etiquetas").getString("SendingEmail"));
 					Registered us = fatxada.getUser(userText.getText());
 					String code= mail.sendEmail(us.getEmail());
 					JFrame a = new VerificateGUI(us, code);
 					a.setVisible(true);
+				}else {
+					testuEmaitza.setText(ResourceBundle.getBundle("Etiquetas").getString("WrongUsr"));
 				}
 			}
 		});

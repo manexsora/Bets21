@@ -25,6 +25,7 @@ public class ChangePassGUI extends JFrame {
 	private BLFacade fatxada;
 	private JPasswordField passwordField;
 	private JPasswordField confirmPasswordField;
+	JLabel lblTestu;
 
 	/**
 	 * Launch the application.
@@ -67,10 +68,15 @@ public class ChangePassGUI extends JFrame {
 		JButton btnEnter = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Accept"));
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(passwordField.getPassword()!=null & confirmPasswordField.getPassword()!=null) {
+				if(!String.valueOf(passwordField.getPassword()).equals("") & !String.valueOf(confirmPasswordField.getPassword()).equals("")) {
 					if(String.valueOf(passwordField.getPassword()).equals(String.valueOf(confirmPasswordField.getPassword()))) {
 						fatxada.changePass(us, String.valueOf(passwordField.getPassword()));
+						lblTestu.setText(ResourceBundle.getBundle("Etiquetas").getString("Changed"));
+					}else {
+						lblTestu.setText(ResourceBundle.getBundle("Etiquetas").getString("IncorrectPass"));
 					}
+				}else {
+					lblTestu.setText(ResourceBundle.getBundle("Etiquetas").getString("IncorrectPass"));
 				}
 			}
 		});
@@ -93,5 +99,9 @@ public class ChangePassGUI extends JFrame {
 		confirmPasswordField = new JPasswordField();
 		confirmPasswordField.setBounds(267, 163, 132, 20);
 		contentPane.add(confirmPasswordField);
+		
+		lblTestu = new JLabel(); //$NON-NLS-1$ //$NON-NLS-2$
+		lblTestu.setBounds(167, 38, 173, 14);
+		contentPane.add(lblTestu);
 	}
 }

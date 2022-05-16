@@ -26,6 +26,7 @@ public class VerificateGUI extends JFrame {
 	static String code;
 	private JFrame thisframe;
 	private Mail mail = new Mail();
+	JLabel lblTestu;
 
 	/**
 	 * Launch the application.
@@ -73,12 +74,16 @@ public class VerificateGUI extends JFrame {
 		JButton btnEnter = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Accept"));
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(textFieldCode.getText()!=null) {
+				if(!textFieldCode.getText().equals("")) {
 					if(textFieldCode.getText().equals(code)) {
 						JFrame a= new ChangePassGUI(us);
 						thisframe.setVisible(false);
 						a.setVisible(true);
+					}else {
+						lblTestu.setText(ResourceBundle.getBundle("Etiquetas").getString("IncorrectCode"));
 					}
+				}else {
+					lblTestu.setText(ResourceBundle.getBundle("Etiquetas").getString("IncorrectCode"));
 				}
 			}
 		});
@@ -98,9 +103,14 @@ public class VerificateGUI extends JFrame {
 		btnSendAgain.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				code = mail.sendEmail(us.getEmail());
+				lblTestu.setText(ResourceBundle.getBundle("Etiquetas").getString("SendingEmail"));
 			}
 		});
 		btnSendAgain.setBounds(280, 11, 144, 23);
 		contentPane.add(btnSendAgain);
+		
+		lblTestu = new JLabel(); //$NON-NLS-1$ //$NON-NLS-2$
+		lblTestu.setBounds(119, 219, 181, 14);
+		contentPane.add(lblTestu);
 	}
 }
