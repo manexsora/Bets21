@@ -77,6 +77,7 @@ public class FindQuestionsGUI extends JFrame {
 			ResourceBundle.getBundle("Etiquetas").getString("Value")
 
 	};
+	private final JLabel lblTestu = new JLabel(); //$NON-NLS-1$ //$NON-NLS-2$
 
 	public FindQuestionsGUI(User user)
 	{
@@ -269,13 +270,16 @@ public class FindQuestionsGUI extends JFrame {
 		this.getContentPane().add(scrollPaneQueries, null);
 		btnApostatu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					if(betList.size()<1) {	
+					if(betList.size()>=1) {	
 						int i=tableFee.getSelectedRow();
 						domain.Kuotak k=(domain.Kuotak)tableModelFee.getValueAt(i,2);
 						betList.add(k);
+						BetGUI a = new BetGUI(user, betList);
+						a.setVisible(true);
+					}else {
+						lblTestu.setText(ResourceBundle.getBundle("Etiquetas").getString("ChooseFee"));
 					}
-					BetGUI a = new BetGUI(user, betList);
-					a.setVisible(true);
+					
 				
 			}
 		});
@@ -337,7 +341,7 @@ public class FindQuestionsGUI extends JFrame {
 		tableFee.getColumnModel().getColumn(1).setPreferredWidth(93);
 		
 		
-		JButton btnAddToBet = new JButton("Add"); //$NON-NLS-1$ //$NON-NLS-2$
+		JButton btnAddToBet = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Add")); //$NON-NLS-1$ //$NON-NLS-2$
 		btnAddToBet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tableFee.getSelectedRow()!=-1) {
@@ -378,7 +382,7 @@ public class FindQuestionsGUI extends JFrame {
 					thisFrame.setVisible(true);
 					
 				}else {
-					//mezu bat jarri o
+					lblTestu.setText(ResourceBundle.getBundle("Etiquetas").getString("ChooseFee"));
 				}
 			}
 		});
@@ -404,6 +408,9 @@ public class FindQuestionsGUI extends JFrame {
 		tableModelBet = new DefaultTableModel(null, columnNamesBet);
 
 		tableBet.setModel(tableModelBet);
+		lblTestu.setBounds(725, 409, 240, 14);
+		
+		getContentPane().add(lblTestu);
 		
 		
 
