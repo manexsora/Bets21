@@ -401,7 +401,7 @@ public class DataAccess  {
 		user.setDirua(a);
 		user.addMovement(betValue, 2);
 		us.addMovement(betValue, 2);
-
+		
 		user.addBet(betValue,kuot);
 		Bet b = us.addBet(betValue, kuotalist);
 		for(Kuotak kk:kuot) {
@@ -410,6 +410,38 @@ public class DataAccess  {
 
 		for(Kuotak kk:kuotalist) {
 			kk.addBet(b);
+		}
+		
+		if(!user.getFollower().isEmpty()) {
+			for(Registered u: user.getFollower()) {
+
+				User bu = db.find(User.class, u.getUsername());
+				Registered use = (Registered) bu;
+				float aa = use.getDirua()-betValue;
+				if(aa<0) {
+					u.addMovement(aa, 7);
+					use.addMovement(aa, 7);
+					continue;
+				}
+				use.setDirua(aa);
+				u.setDirua(aa);
+				u.addMovement(betValue, 8);
+				use.addMovement(betValue, 8);
+
+				u.addBet(betValue,kuot);
+				Bet bb = use.addBet(betValue, kuotalist);
+				for(Kuotak kk:kuot) {
+					kk.addBet(bb);
+				}
+
+				for(Kuotak kk:kuotalist) {
+					kk.addBet(bb);
+				}
+				db.getTransaction().begin();
+				db.persist(use);
+				db.getTransaction().commit();
+				u.getBets().get(u.getBets().size()-1).setBetNumber(use.getBets().get(u.getBets().size()-1).getBetNumber());
+			}
 		}
 
 
@@ -654,18 +686,22 @@ public class DataAccess  {
 	}
 	
 	public String follow(Registered nork, Registered nori) {
-		Registered norkd = db.find(Registered.class, nork);
-		Registered norid = db.find(Registered.class, nori);
+
 		if(nork.getUsername().equals(nori.getUsername())) {
 			return("You");
 		}
 		if(!nork.getFollowing().contains(nori)) {
+			Registered norkd = db.find(Registered.class, nork);
+			Registered norid = db.find(Registered.class, nori);
 			norkd.addFollowing(norid);
 			norid.addFollower(norkd);
 			nork.addFollowing(nori);
 			nori.addFollower(nork);
+			db.getTransaction().begin();
 			db.persist(norid);
 			db.persist(norkd);
+			db.getTransaction().commit();
+			
 			return("Follow");
 		}
 		

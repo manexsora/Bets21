@@ -57,6 +57,8 @@ public class Movement {
 			case 4: return ResourceBundle.getBundle("Etiquetas").getString("WinBet");
 			case 5: return ResourceBundle.getBundle("Etiquetas").getString("LoseBet");
 			case 6: return ResourceBundle.getBundle("Etiquetas").getString("DeleteEvent");
+			case 7: return ResourceBundle.getBundle("Etiquetas").getString("NoMoneyMove");
+			case 8: return ResourceBundle.getBundle("Etiquetas").getString("FollowerBet");
 			default: return null;
 		}
 	}

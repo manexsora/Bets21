@@ -51,6 +51,7 @@ public class RankingGUI extends JFrame {
 			ResourceBundle.getBundle("Etiquetas").getString("AmountBet"),
 			ResourceBundle.getBundle("Etiquetas").getString("WinRate"),
 	};
+	private JButton btnClose;
 
 	/**
 	 * Create the frame.
@@ -67,10 +68,10 @@ public class RankingGUI extends JFrame {
 		contentPane.setLayout(null);
 		
 		JScrollPane RankScrollPane = new JScrollPane();
-		RankScrollPane.setBounds(64, 36, 411, 196);
+		RankScrollPane.setBounds(63, 45, 411, 196);
 		contentPane.add(RankScrollPane);
 		
-		JButton btnFollow = new JButton("New button");
+		JButton btnFollow = new JButton(ResourceBundle.getBundle("Etiquetas").getString("FollowUs")); //$NON-NLS-1$ //$NON-NLS-2$
 		btnFollow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tableRank.getSelectedRow()==-1) {
@@ -118,8 +119,17 @@ public class RankingGUI extends JFrame {
 		tableRank.setModel(tableModelRank);
 		
 		lblTestu = new JLabel();
-		lblTestu.setBounds(133, 243, 278, 14);
+		lblTestu.setBounds(133, 253, 278, 14);
 		contentPane.add(lblTestu);
+		
+		btnClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				thisFrame.setVisible(false);
+			}
+		});
+		btnClose.setBounds(10, 11, 89, 23);
+		contentPane.add(btnClose);
 
 		
 
