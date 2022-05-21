@@ -266,6 +266,23 @@ public class BLFacadeImplementation  implements BLFacade {
 		dbManager.close();
 		
 	}
+
+	@Override
+	public Vector<Registered> getRank() {
+		dbManager.open(false);
+		Vector<Registered> a = dbManager.getRank();
+		dbManager.close();
+		return a;
+	}
+
+	@Override
+	public String follow(Registered nork, Registered nori) {
+		dbManager.open(false);
+		String a = dbManager.follow(nork, nori);
+		dbManager.close();
+		return a;
+		
+	}
 }
 	
 

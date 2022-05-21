@@ -98,4 +98,8 @@ public interface BLFacade  {
 	
 	@WebMethod void changePass(Registered us, String pass);
 	
+	@WebMethod Vector<Registered> getRank();
+	
+	@WebMethod String follow(Registered nork, Registered nori);
+	
 }

@@ -2,6 +2,7 @@ package dataAccess;
 
 
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -99,6 +100,7 @@ public class DataAccess  {
 			Question q4;
 			Question q5;
 			Question q6;
+			Question q7;
 
 			if (Locale.getDefault().equals(new Locale("es"))) {
 				q1=ev1.addQuestion("¿Quién ganará el partido?",1 );
@@ -111,6 +113,7 @@ public class DataAccess  {
 			else if (Locale.getDefault().equals(new Locale("en"))) {
 				q1=ev1.addQuestion("Who will win the match?",1 );
 				q2=ev1.addQuestion("Who will score first?",2 );
+				q7=ev1.addQuestion("Who will win the match?",1 );
 				q3=ev11.addQuestion("Who will win the match?",1 );
 				q4=ev11.addQuestion("How many goals will be scored in the match?",2 );
 				q5=ev17.addQuestion("Who will win the match?",1 );
@@ -127,14 +130,42 @@ public class DataAccess  {
 			}
 
 			User u1 = new Admin("admin", "anus", "Admin el capo", "admin");
-			Registered a = new Registered("a","andonisudupeehu@gmail.com","a","a");
-			Kuotak f1=q1.addFee("a", 2);
-			Kuotak f2=q1.addFee("b",2);
-			Kuotak f3=q2.addFee("c",2);
-			a.setDirua(69);
+			Registered a = new Registered("ansu","andonisudupeehu@gmail.com","Andoni Sudupe","a");
+			Registered b = new Registered("txominZKT","b","Txomin Errasti","b");
+			Registered aa = new Registered("a","a","a","a");
+			Registered bb = new Registered("b","b","b","b");
+			Registered q = new Registered("q","q","q","q");
+			Registered w = new Registered("w","w","w","w");
+			
+			aa.setAmountBet(10);
+			bb.setAmountBet(10);
+			q.setAmountBet(10);
+			w.setAmountBet(10);
+			a.setAmountBet(10);
+			b.setAmountBet(10);
+			
+			aa.setAmountWin(4);
+			bb.setAmountWin(8);
+			q.setAmountWin(7);
+			w.setAmountWin(9);
+			a.setAmountWin(6);
+			b.setAmountWin(5);
+			
+			Kuotak f1=q1.addFee("a1", 2);
+			Kuotak f2=q1.addFee("b1",2);
+			Kuotak f3=q2.addFee("a2",2);
+			Kuotak f4=q1.addFee("c1", 2);
+			Kuotak f5=q2.addFee("b2", 2);
+			a.setDirua(100);
+			b.setDirua(100);
 
 			db.persist(u1);
 			db.persist(a);
+			db.persist(b);
+			db.persist(aa);
+			db.persist(bb);
+			db.persist(q);
+			db.persist(w);
 
 			db.persist(q1);
 			db.persist(q2);
@@ -370,7 +401,7 @@ public class DataAccess  {
 		user.setDirua(a);
 		user.addMovement(betValue, 2);
 		us.addMovement(betValue, 2);
- 
+
 		user.addBet(betValue,kuot);
 		Bet b = us.addBet(betValue, kuotalist);
 		for(Kuotak kk:kuot) {
@@ -445,7 +476,7 @@ public class DataAccess  {
 				Registered us = (Registered) u;
 				Bet be = db.find(Bet.class, b.getBetNumber());	
 				if(b.getKuotaList().size()==1) {
-					
+
 					Float a = (float) (be.getApostatutakoDiruKop()*ku.getValue())+us.getDirua();
 					us.setDirua(a);
 					b.getUser().setDirua(a);
@@ -487,16 +518,21 @@ public class DataAccess  {
 				for(Bet b:ke.getBets()) {
 					Registered us = db.find(Registered.class, b.getUser().getUsername());
 					Bet be = db.find(Bet.class, b.getBetNumber());	
-					b.getUser().addMovement(0, 5);
-					Movement mo = us.addMovement(0, 5);
-					us.deleteBet(be);
-					b.getUser().deleteBet(b);
-					ka.deleteBet(be);
-					db.getTransaction().begin();
-					db.remove(be);
-					db.persist(us);
-					db.persist(ka);
-					db.getTransaction().commit();
+					if(be!=null) {
+						for(Kuotak kuo: be.getKuotaList()) {
+							kuo.deleteBet(be);
+						}
+						b.getUser().addMovement(0, 5);
+						Movement mo = us.addMovement(0, 5);
+						us.deleteBet(be);
+						b.getUser().deleteBet(b);
+						ka.deleteBet(be);
+						db.getTransaction().begin();
+						db.remove(be);
+						db.persist(us);
+						db.persist(ka);
+						db.getTransaction().commit();
+					}
 				}	
 			}
 
@@ -523,22 +559,22 @@ public class DataAccess  {
 					db.persist(us);
 					db.getTransaction().commit();
 				}	
-			
+
+				db.getTransaction().begin();
+				Kuotak kk = db.find(Kuotak.class, k.getFeeN());
+				db.remove(kk);
+				db.getTransaction().commit();
+			}
 			db.getTransaction().begin();
-			Kuotak kk = db.find(Kuotak.class, k.getFeeN());
-			db.remove(kk);
+			Question qq = db.find(Question.class, q.getQuestionNumber());
+			db.remove(qq);
 			db.getTransaction().commit();
 		}
+
 		db.getTransaction().begin();
-		Question qq = db.find(Question.class, q.getQuestionNumber());
-		db.remove(qq);
+		db.remove(event);
 		db.getTransaction().commit();
 	}
-
-	db.getTransaction().begin();
-	db.remove(event);
-	db.getTransaction().commit();
-}
 
 	public boolean mezuaBidali(String noriIz, String norkIz, String asun, String ed) {
 		Registered nork = db.find(Registered.class, norkIz);
@@ -549,7 +585,7 @@ public class DataAccess  {
 		db.getTransaction().commit();
 		return true;
 	}
-	
+
 	public boolean duplicate(Event evi, Date d) {
 		if(alreadyExistsEvent(evi,d)) {
 			return true;
@@ -577,10 +613,10 @@ public class DataAccess  {
 		db.persist(nEvent);
 		db.getTransaction().commit();
 		return false;
-		
-		
+
+
 	}
-	
+
 	public boolean alreadyExistsEvent(Event evi,Date d) {
 		TypedQuery<Event> query = db.createQuery("SELECT ev FROM Event ev WHERE ev.eventDate=?1 and ev.description=?2",Event.class);   
 		query.setParameter(1, d);
@@ -591,18 +627,49 @@ public class DataAccess  {
 		}
 		return false;
 	}
-	
+
 	public Registered getUser(String usrname) {
 		Registered a = db.find(Registered.class, usrname);
 		return a;
 	}
-	
+
 	public void changePass(Registered us, String pass) {
 		Registered user = db.find(Registered.class, us.getUsername());
 		user.setPassWord(pass);
 		db.getTransaction().begin();
 		db.persist(user);
 		db.getTransaction().commit();
+	}
+	
+	public Vector<Registered> getRank(){
+		TypedQuery<Registered> query = db.createQuery("SELECT r FROM Registered r WHERE amountBet>0",Registered.class);   
+		List<Registered> registeredList = query.getResultList();
+		Vector<Registered> a = new Vector<Registered>();
+		registeredList.sort(Comparator.comparing(Registered::getWinRateFloat).reversed());
+		for(Registered u: registeredList) {
+			if(u.getWinRateFloat()>0.5)
+			a.add(u);	
+		}
+		return a;
+	}
+	
+	public String follow(Registered nork, Registered nori) {
+		Registered norkd = db.find(Registered.class, nork);
+		Registered norid = db.find(Registered.class, nori);
+		if(nork.getUsername().equals(nori.getUsername())) {
+			return("You");
+		}
+		if(!nork.getFollowing().contains(nori)) {
+			norkd.addFollowing(norid);
+			norid.addFollower(norkd);
+			nork.addFollowing(nori);
+			nori.addFollower(nork);
+			db.persist(norid);
+			db.persist(norkd);
+			return("Follow");
+		}
+		
+		return("AlreadyFollow");
 	}
 
 

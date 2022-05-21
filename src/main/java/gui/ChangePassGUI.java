@@ -104,4 +104,5 @@ public class ChangePassGUI extends JFrame {
 		lblTestu.setBounds(167, 38, 173, 14);
 		contentPane.add(lblTestu);
 	}
+	
 }

@@ -271,9 +271,6 @@ public class FindQuestionsGUI extends JFrame {
 		btnApostatu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					if(betList.size()>=1) {	
-						int i=tableFee.getSelectedRow();
-						domain.Kuotak k=(domain.Kuotak)tableModelFee.getValueAt(i,2);
-						betList.add(k);
 						BetGUI a = new BetGUI(user, betList);
 						a.setVisible(true);
 					}else {

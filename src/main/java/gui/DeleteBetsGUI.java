@@ -254,7 +254,7 @@ public class DeleteBetsGUI extends JFrame {
 		
 		
 		
-		JLabel lblNewLabel_2 = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("DeleteBetsGUI.lblNewLabel_2.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		JLabel lblNewLabel_2 = new JLabel(); //$NON-NLS-1$ //$NON-NLS-2$
 		lblNewLabel_2.setBounds(713, 20, 96, 14);
 		contentPane.add(lblNewLabel_2);
 

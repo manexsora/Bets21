@@ -115,6 +115,16 @@ public class RegisteredUserGUI extends JFrame {
 			jContentPane.add(CurrentMoneyLabel);
 			jContentPane.add(getBtnNewButton());
 			jContentPane.add(getBtnNewButton_2());
+			
+			JButton btnRanking = new JButton(ResourceBundle.getBundle("Etiquetas").getString(ResourceBundle.getBundle("Etiquetas").getString("Ranking"))); //$NON-NLS-1$ //$NON-NLS-2$
+			btnRanking.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JFrame a = new RankingGUI(user);
+					a.setVisible(true);
+				}
+			});
+			btnRanking.setBounds(10, 116, 103, 23);
+			jContentPane.add(btnRanking);
 		}
 		return jContentPane;
 	}
@@ -208,7 +218,7 @@ public class RegisteredUserGUI extends JFrame {
 	}
 	private JButton getBtnNewButton_2() {
 		if (btnNewButton_2 == null) {
-			btnNewButton_2 = new JButton(ResourceBundle.getBundle("Etiquetas").getString("RegisteredUserGUI.btnNewButton_2.text")); //$NON-NLS-1$ //$NON-NLS-2$
+			btnNewButton_2 = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Messages")); //$NON-NLS-1$ //$NON-NLS-2$
 			btnNewButton_2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					MezuakIkusiGUI b = new MezuakIkusiGUI(user);

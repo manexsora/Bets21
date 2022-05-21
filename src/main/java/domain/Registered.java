@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 public class Registered extends User{
 
 	private float dirua;
+	private int amountBet;
+	private int amountWin;
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private Vector<Movement> movements = new Vector<Movement>();
 	
@@ -32,19 +34,38 @@ public class Registered extends User{
 	public void setJasoak(Vector<Mezua> jasoak) {
 		this.jasoak = jasoak;
 	}
+	
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
-	private Vector<Jarraitu> jarraitzaileak = new Vector<Jarraitu>();
+	private Vector<Registered> jarraitzaileak = new Vector<Registered>();
 
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
-	private Vector<Jarraitu> jarraituak = new Vector<Jarraitu>();
+	private Vector<Registered> jarraituak = new Vector<Registered>();
 	
 	
 	public Registered(String usrnm, String emaila,String izena, String password) {
 		super(usrnm,emaila,izena,password);
 		setDirua(0);
+		amountBet=0;
+		amountWin=0;
 	}
 	public Registered() {
 		super();
+	}
+	
+	public void setAmountBet(int a) {
+		amountBet=a;
+	}
+	
+	public int getAmountBet() {
+		return amountBet;
+	}
+	
+	public void setAmountWin(int a) {
+		amountWin=a;
+	}
+	
+	public int getAmountWin() {
+		return amountWin;
 	}
 	
 	public Vector<Movement> getMovements() {
@@ -53,6 +74,20 @@ public class Registered extends User{
 	
 	public Vector<Bet> getBets() {
 		return apostuak;
+	}
+	
+	public String getWinRate() {
+		if(amountBet==0) {
+			return("0");
+		}
+		return("%"+((float)getAmountWin()/(float)getAmountBet())*100);
+	}
+	
+	public float getWinRateFloat() {
+		if(amountBet==0) {
+			return(0);
+		}
+		return((float)getAmountWin()/(float)getAmountBet());
 	}
 	
 
@@ -109,6 +144,18 @@ public class Registered extends User{
 	}
 	public void addJasoa(Mezua mz) {
 		this.jasoak.add(mz);
+	}
+	public void addFollower(Registered us) {
+		jarraitzaileak.add(us);
+	}
+	public void addFollowing(Registered us) {
+		jarraituak.add(us);
+	}
+	public Vector<Registered> getFollower(){
+		return jarraitzaileak;
+	}
+	public Vector<Registered> getFollowing(){
+		return jarraituak;
 	}
 	
 }
